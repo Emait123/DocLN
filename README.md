@@ -8,4 +8,4 @@ Cấu trúc: MVVM
 (DB) -> Model -> ViewModel -> View
 
 File:
-RetrofitAPI: chứa các phương thức để lấy dữ liệu từ API
+RetrofitAPI: chứa các phương thức để lấy dữ liệu từ API, sử dụng Retrofit2 (import trong build.gradle)
