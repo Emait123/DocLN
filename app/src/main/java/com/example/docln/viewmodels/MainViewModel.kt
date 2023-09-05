@@ -1,10 +1,12 @@
-package com.example.docln
+package com.example.docln.viewmodels
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.docln.Novel
+import com.example.docln.RetrofitAPI
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
@@ -16,7 +18,7 @@ class MainViewModel : ViewModel() {
             val apiService = RetrofitAPI.getInstance()
             try {
                 val novelList = apiService.getNovelList()
-                println(novelList)
+//                println(novelList)
                 novelListResponse = novelList
             }
             catch (e: Exception) {

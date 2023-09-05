@@ -1,19 +1,12 @@
-package com.example.docln
+package com.example.docln.viewmodels
 
-import android.util.Log
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.example.docln.NovelDetail
+import com.example.docln.RetrofitAPI
 import kotlinx.coroutines.launch
 
 class NovelViewModel(
@@ -23,22 +16,24 @@ class NovelViewModel(
 //    private val _res = MutableStateFlow<NovelDetail?>(null)
 //    val novelDetailResponse = _res.asStateFlow()
 //    val novelDetailResponse:StateFlow<NovelDetail> = savedStateHandle.getStateFlow("detail", NovelDetail(0,"default",""))
-    var novelDetailResponse by mutableStateOf("")
+//    var novelDetailResponse by mutableStateOf("")
+//    var novelDetailResponse: MutableList<NovelDetail> by mutableStateOf(mutableListOf())
+    var novelDetailResponse: List<NovelDetail> by mutableStateOf(listOf())
     private set
     var errorMessage: String by mutableStateOf("")
 
-    fun getNovelDetail() {
+    fun getNovelDetail(id: Int) {
         viewModelScope.launch {
             val apiService = RetrofitAPI.getInstance()
             try {
-                val novelDetail = apiService.getNovelDetail(2)
+                val novelDetail = apiService.getNovelDetail(id)
                 println("in view model")
                 println(novelDetail)
-                novelDetailResponse = novelDetail.ten_truyen
-                println("after view model")
-                println(novelDetailResponse)
 //                novelDetailResponse.clear()
 //                novelDetailResponse.add(novelDetail)
+                novelDetailResponse = listOf(novelDetail)
+                println("after view model")
+                println(novelDetailResponse)
 //                savedStateHandle["detail"] = novelDetail
 //                novelDetailResponse.value.ten_truyen = novelDetail.ten_truyen
 //                novelDetailResponse.value = novelDetail

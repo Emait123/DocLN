@@ -26,6 +26,10 @@ data class NovelDetail (
     val id_truyen: Int = 0,
     var ten_truyen: String = "de",
     val coverImg: String = "",
-//    val dsChuong: List<Chapter>
+    val dsChuong: List<Chapter>
 )
 
+data class ChapterContent(
+    val id_chuong: Int,
+    val noidung: String
+)

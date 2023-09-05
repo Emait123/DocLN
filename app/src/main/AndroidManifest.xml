@@ -16,7 +16,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31" >
         <activity
-            android:name=".NovelActivity"
+            android:name=".screens.NovelActivity"
             android:parentActivityName=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_novel"

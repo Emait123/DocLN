@@ -16,7 +16,8 @@ interface RetrofitAPI {
     @GET("gettruyen/{truyen_id}")
     suspend fun getNovelDetail(@Path(value="truyen_id", encoded = true) id:Int): NovelDetail
 
-//    suspend fun getNovelDetail(): NovelDetail
+    @GET("chapter/{chap_id}")
+    suspend fun getChapterContent(@Path(value="chap_id", encoded = true) id:Int): ChapterContent
 
 
     companion object {
@@ -27,7 +28,6 @@ interface RetrofitAPI {
                     .baseUrl("https://mialotus.top/android/")
                     .addConverterFactory(GsonConverterFactory.create()).build().create(RetrofitAPI::class.java)
             }
-//            Log.e("testAPI", retrofitAPI.toString())
             return retrofitAPI!!
         }
     }
