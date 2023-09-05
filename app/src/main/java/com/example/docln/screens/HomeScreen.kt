@@ -81,7 +81,7 @@ fun NovelItem (navController: NavController, novel: Novel) {
                 ) {
                     Text(
                         text = novel.ten_truyen,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .padding(10.dp)
