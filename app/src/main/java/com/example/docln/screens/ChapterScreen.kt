@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.docln.Chapter
 import com.example.docln.ui.theme.DocLNTheme
 import com.example.docln.viewmodels.ChapterViewModel
 
@@ -55,6 +57,8 @@ fun ChapterScreen(chapterID: String?) {
     }
     val content = res.first()
     val chap = content.noidung
+
+    val curChap = content.STT
 
     var isVisible = remember { mutableStateOf(false) }
     var backgroundColor = remember { mutableStateOf(Color.White) }
@@ -109,10 +113,11 @@ fun ChapterScreen(chapterID: String?) {
         }
         if (isVisible.value) {
             Row(modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter))
+                .align(Alignment.BottomCenter)
+                .background(Color.White)
+                .height(60.dp))
             {
-                BottomNavBar()
+                BottomNavBar(Modifier.size(40.dp).fillMaxSize())
 //                CustomReader(backgroundColor, fontColor, fontSize, fontStyle)
             }
         }
@@ -166,41 +171,57 @@ fun CustomReader(background : MutableState<Color>,
 }
 
 @Composable
-fun BottomNavBar() {
+fun BottomNavBar(iconModifier: Modifier = Modifier) {
     Row (
-        horizontalArrangement = Arrangement.SpaceBetween) {
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically) {
         Icon(
             Icons.Rounded.ArrowBack,
             contentDescription = null,
-            Modifier.clickable {  }
+            modifier = iconModifier
+                .clickable {  }
         )
         Icon(
             Icons.Rounded.Home,
             contentDescription = null,
-            Modifier.clickable {  }
+            modifier = iconModifier
+                .clickable {  }
         )
         Icon(
             Icons.Rounded.Settings,
             contentDescription = null,
-            Modifier.clickable {  }
+            modifier = iconModifier
+                .clickable {  }
         )
         Icon(
             Icons.Rounded.Info,
             contentDescription = null,
-            Modifier.clickable {  }
+            modifier = iconModifier
+                .clickable {  }
         )
         Icon(
             Icons.Rounded.AddCircle,
             contentDescription = null,
-            Modifier.clickable {  }
+            modifier = iconModifier
+                .clickable {  }
         )
         Icon(
             Icons.Rounded.ArrowForward,
             contentDescription = null,
-            Modifier.clickable {  }
+            modifier = iconModifier
+                .clickable {  }
         )
     }
 }
+
+//inline fun Modifier.checkSTT(curChap: Int, dsChap: List<Chapter>, modifier: Modifier.() -> Modifier) : Modifier {
+//    return if (dsChap.none { it.STT < curChap }) {
+//        then(modifier(Modifier))
+//    } else {
+//        this
+//    }
+//}
 
 @Composable
 fun test(){

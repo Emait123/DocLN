@@ -67,7 +67,6 @@ fun NovelDetailScreen(navController: NavController, novelID: String?) {
     }
     var novel = res.first()
     val dsChuong = novel.dsChuong.sortedBy { it.STT }
-//    Column (modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
 
     LazyColumn (modifier = Modifier
         .fillMaxSize()
@@ -179,7 +178,6 @@ fun NovelDetailScreen(navController: NavController, novelID: String?) {
             item { NoChapter() }
         }
     }
-//    }
 }
 
 @Composable
