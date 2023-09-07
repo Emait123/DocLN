@@ -36,6 +36,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.SystemFontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -96,6 +97,7 @@ fun ChapterScreen(chapterID: String?) {
                     AsyncImage(
                         model = p.removePrefix("link:"),
                         contentDescription = "null",
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }
                 else {
@@ -104,8 +106,10 @@ fun ChapterScreen(chapterID: String?) {
                         style = TextStyle(
                             fontSize = fontSize.value.sp,
                             color = fontColor.value,
-                            fontFamily = fontStyle.value
-                        )
+                            fontFamily = fontStyle.value,
+                        ),
+                        textAlign = TextAlign.Justify,
+                        modifier = Modifier.padding(start = 10.dp, end = 10.dp)
                     )
 //                    Log.e("test","Text line")
                 }
