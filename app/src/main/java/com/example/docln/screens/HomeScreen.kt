@@ -2,11 +2,13 @@ package com.example.docln.screens
 
 import android.graphics.Paint.Style
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,11 +18,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Face
@@ -45,6 +49,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -86,6 +91,7 @@ fun HomeScreen(navController: NavController) {
 fun TopBar() {
     TopAppBar(
         title = { Text("Đọc LN") },
+        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Cyan)
     )
 }
 
@@ -128,14 +134,47 @@ fun HomeScreenContent (navController: NavController, modifier: Modifier) {
     val viewModel = viewModel<MainViewModel>()
     viewModel.getNovelList()
     val novelList = viewModel.novelListResponse
-    Column {
-        Text(text = "Chương mới", modifier = modifier)
+    Column (modifier = Modifier.verticalScroll(rememberScrollState())) {
+        Row(modifier = modifier.padding(5.dp)) {
+            Text(text = "CHƯƠNG",
+                color = Color.White,
+                modifier = Modifier
+                    .background(Color.Black)
+                    .padding(5.dp))
+            Text(text = "MỚI", modifier = Modifier.padding(top = 5.dp))
+        }
         LazyRow () {
             itemsIndexed(items = novelList, key = {index, novel -> novel.id_truyen}) {
                     index, item -> NovelItem(navController, novel = item)
             }
         }
-        Text("Sáng tác mới")
+        Row(modifier = modifier.padding(start = 5.dp)) {
+            Text(text = "SÁNG TÁC",
+                color = Color.White,
+                modifier = Modifier
+                    .background(Color.Black)
+                    .padding(5.dp))
+            Text(text = "MỚI", modifier = Modifier.padding(top = 5.dp))
+        }
+        LazyRow () {
+            itemsIndexed(items = novelList, key = {index, novel -> novel.id_truyen}) {
+                    index, item -> NovelItem(navController, novel = item)
+            }
+        }
+
+        Row(modifier = modifier.padding(start = 5.dp)) {
+            Text(text = "TRUYỆN",
+                color = Color.White,
+                modifier = Modifier
+                    .background(Color.Black)
+                    .padding(5.dp))
+            Text(text = "TOP", modifier = Modifier.padding(top = 5.dp))
+        }
+        LazyRow () {
+            itemsIndexed(items = novelList, key = {index, novel -> novel.id_truyen}) {
+                    index, item -> NovelItem(navController, novel = item)
+            }
+        }
     }
 }
 
@@ -155,7 +194,8 @@ fun NovelItem (navController: NavController, novel: Novel) {
                     .align(Alignment.TopCenter)
                     .fillMaxWidth(),
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(R.drawable.nocover)
+                    .data(novel.coverImg)
+                    .error(R.drawable.nocover)
                     .crossfade(true)
                     .build(),
                 contentDescription = "Novel Cover Image",

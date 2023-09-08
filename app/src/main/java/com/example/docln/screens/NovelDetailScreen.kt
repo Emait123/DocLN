@@ -49,6 +49,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.docln.Chapter
 import com.example.docln.Navigation
+import com.example.docln.Novel
+import com.example.docln.NovelDetail
 import com.example.docln.R
 import com.example.docln.Routes
 import com.example.docln.ui.theme.DocLNTheme
@@ -74,8 +76,8 @@ fun NovelDetailScreen(navController: NavController, novelID: String?) {
         item {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(R.drawable.nocover)
-//                .data(novel.coverImg)
+//                    .data(R.drawable.nocover)
+                    .data(novel.coverImg)
                     .crossfade(true)
                     .build(),
                 contentDescription = "Novel Cover Image",
@@ -160,7 +162,7 @@ fun NovelDetailScreen(navController: NavController, novelID: String?) {
             Text(text = "Tên khác:")
             Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
 
-            ExpandDesc()
+            ExpandDesc(novel)
             Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
 
             ExpandRating()
@@ -223,23 +225,19 @@ fun NoChapter() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpandDesc() {
+fun ExpandDesc(novel : NovelDetail) {
     var expanded by remember { mutableStateOf(false) }
     Card (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp)
+            .padding(vertical = 10.dp)
             .animateContentSize(),
         onClick = { expanded = !expanded }
     ) {
         Column {
             Text("Tóm tắt:")
-            Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vehicula, urna vel tempus...")
             if (expanded) {
-                Text(
-                    modifier = Modifier.padding(10.dp),
-                    text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vehicula, urna vel tempus congue, quam erat lacinia ipsum, id cursus tellus diam et lacus. Fusce condimentum ultricies purus, et aliquam orci tristique in. Suspendisse euismod accumsan massa, a hendrerit velit vehicula ac. Nulla facilisi."
-                )
+                Text(novel.tomtat)
             }
         }
     }
@@ -252,7 +250,7 @@ fun ExpandRating() {
     Card (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp)
+            .padding(vertical = 10.dp)
             .animateContentSize(),
         onClick = { expanded = !expanded }
     ) {

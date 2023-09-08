@@ -26,6 +26,7 @@ data class NovelDetail (
     val id_truyen: Int = 0,
     var ten_truyen: String = "de",
     val coverImg: String = "",
+    val tomtat: String,
     val dsChuong: List<Chapter>
 )
 

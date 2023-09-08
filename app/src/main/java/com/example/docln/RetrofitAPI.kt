@@ -10,7 +10,7 @@ import retrofit2.http.Path
 
 interface RetrofitAPI {
 
-    @GET("listtruyen/1")
+    @GET("listtruyen")
     suspend fun getNovelList(): List<Novel>
 
     @GET("gettruyen/{truyen_id}")
