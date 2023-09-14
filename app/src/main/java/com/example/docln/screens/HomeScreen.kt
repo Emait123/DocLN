@@ -69,6 +69,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.docln.Novel
 import com.example.docln.R
@@ -141,7 +142,7 @@ fun HomeScreenContent (navController: NavController, modifier: Modifier) {
                 modifier = Modifier
                     .background(Color.Black)
                     .padding(5.dp))
-            Text(text = "MỚI", modifier = Modifier.padding(top = 5.dp))
+            Text(text = "MỚI", modifier = Modifier.padding(top = 5.dp, start = 5.dp))
         }
         LazyRow () {
             itemsIndexed(items = novelList, key = {index, novel -> novel.id_truyen}) {
@@ -195,6 +196,10 @@ fun NovelItem (navController: NavController, novel: Novel) {
                     .fillMaxWidth(),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(novel.coverImg)
+                    .memoryCacheKey(novel.coverImg)
+                    .diskCacheKey(novel.coverImg)
+                    .diskCachePolicy(CachePolicy.ENABLED)
+                    .memoryCachePolicy(CachePolicy.ENABLED)
                     .error(R.drawable.nocover)
                     .crossfade(true)
                     .build(),
