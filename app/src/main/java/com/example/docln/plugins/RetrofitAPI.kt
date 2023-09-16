@@ -1,11 +1,11 @@
-package com.example.docln
+package com.example.docln.plugins
 
-import android.util.Log
+import com.example.docln.ChapterContent
+import com.example.docln.Novel
+import com.example.docln.NovelDetail
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import retrofit2.http.GET
-import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface RetrofitAPI {

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -29,13 +28,13 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,7 +49,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.SystemFontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -73,14 +71,14 @@ fun ChapterScreen(chapterID: String?) {
     val content = res.first()
     val chap = content.noidung
 
-    val curChap = content.STT
+//    val curChap = content.STT
 
-    var isVisible = remember { mutableStateOf(false) }
-    var backgroundColor = remember { mutableStateOf(Color.White) }
-    var fontColor = remember { mutableStateOf(Color.Black) }
-    var fontSize = remember { mutableStateOf(24) }
-    var fontStyle = remember { mutableStateOf(FontFamily.Default) }
-    var textAlign = remember { mutableStateOf(TextAlign.Justify) }
+    var isVisible by remember { mutableStateOf(false) }
+    var backgroundColor by remember { mutableStateOf(Color.White) }
+    val fontColor by remember { mutableStateOf(Color.Black) }
+    var fontSize = remember { mutableIntStateOf(24) }
+    var fontStyle by remember { mutableStateOf(FontFamily.Default) }
+    var textAlign by remember { mutableStateOf(TextAlign.Justify) }
 
     val imgRegex = """`img`""".toRegex()
     val result: List<String> = chap.split(imgRegex)
@@ -88,7 +86,7 @@ fun ChapterScreen(chapterID: String?) {
     val interactionSource = MutableInteractionSource()
     Box(modifier = Modifier
         .fillMaxSize()
-        .background(color = backgroundColor.value),
+        .background(color = backgroundColor),
     )
     {
         Column (
@@ -98,17 +96,17 @@ fun ChapterScreen(chapterID: String?) {
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
-                    onClick = { isVisible.value = !isVisible.value }
+                    onClick = { isVisible = !isVisible }
                 ))
         {
             Text(
                 text = content.ten_chuong,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp)
-                    .size(40.dp)
             )
             for (p in result) {
                 if (p.startsWith("link:")){
@@ -122,60 +120,50 @@ fun ChapterScreen(chapterID: String?) {
                     Text(
                         text = p,
                         style = TextStyle(
-                            fontSize = fontSize.value.sp,
-                            color = fontColor.value,
-                            fontFamily = fontStyle.value,
+                            fontSize = fontSize.intValue.sp,
+                            color = fontColor,
+                            fontFamily = fontStyle,
                         ),
-                        textAlign = textAlign.value,
+                        textAlign = textAlign,
                         modifier = Modifier.padding(start = 10.dp, end = 10.dp)
                     )
                 }
             }
         }
-        if (isVisible.value) {
+        if (isVisible) {
             BottomNavBar(
-                backgroundColor,
-                fontSize, fontStyle,
-                textAlign,
+                backgroundChange = { backgroundColor = it },
+                fontSize = fontSize,
+                fontSyleChange = { fontStyle = it },
+                textAlignChange = { textAlign = it },
                 Modifier
                     .align(Alignment.BottomCenter)
                     .background(Color.White)
                     //Thêm sự kiện click rỗng để thanh navbar không bị đóng khi bấm nhầm vào khoảng trống giữa các nút
-                    .clickable(
-                        interactionSource = interactionSource,
-                        indication = null,
-                        onClick = {}
-                    )
+                    .clickable(interactionSource = interactionSource, indication = null, onClick = {})
             )
-//            Row(modifier = Modifier
-//                .align(Alignment.BottomCenter)
-//                .background(Color.White)
-//                )
-//            {
-//            }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavBar(
-    background : MutableState<Color>,
+    backgroundChange : (Color) -> Unit,
     fontSize: MutableState<Int>,
-    fontStyle: MutableState<SystemFontFamily>,
-    textAlign: MutableState<TextAlign>,
-    navBarModifier: Modifier
+    fontSyleChange : (SystemFontFamily) -> Unit,
+    textAlignChange: (TextAlign) -> Unit,
+    modifier: Modifier
 ) {
-    Box(modifier = navBarModifier) {
-        var showCustomText = remember { mutableStateOf(false) }
+    Box(modifier = modifier) {
+        var showCustomText by remember { mutableStateOf(false) }
         Row (
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .zIndex(0f),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
-
+            verticalAlignment = Alignment.CenterVertically)
+        {
             val iconModifier = Modifier.size(40.dp)
             Icon(
                 Icons.Rounded.ArrowBack,
@@ -193,7 +181,7 @@ fun BottomNavBar(
                 Icons.Rounded.Settings,
                 contentDescription = null,
                 modifier = iconModifier
-                    .clickable { showCustomText.value = !showCustomText.value }
+                    .clickable { showCustomText = !showCustomText }
             )
             Icon(
                 Icons.Rounded.Info,
@@ -215,33 +203,34 @@ fun BottomNavBar(
             )
         }
 
-//        val bottomState = remember
-//        ModalDrawerSheet (
-//            modifier = Modifier,
-//            content = CustomReader(
-//                background = background,
-//                fontSize = fontSize,
-//                fontStyle = fontStyle,
-//                textAlign = textAlign
-////                show =
-//            )
-//        )
-        if (showCustomText.value) {
-            CustomReader(background = background, fontSize = fontSize, fontStyle = fontStyle, textAlign = textAlign, showCustomText)
-//            Column (modifier = Modifier.fillMaxSize().align(Alignment.Center).zIndex(2f)) {
-//            }
+        if (showCustomText) {
+            CustomReader(
+                onBGColorChange = { backgroundChange(it) },
+                fontSize = fontSize,
+                onFontStyleChange = { fontSyleChange(it) },
+                onTextAlignChange = { textAlignChange(it) },
+                onVisibilityChange = { showCustomText = !showCustomText }
+            )
         }
     }
 }
 
 @Composable
 fun CustomReader(
-    background : MutableState<Color>,
+    onBGColorChange: (Color) -> Unit,
     fontSize: MutableState<Int>,
-    fontStyle: MutableState<SystemFontFamily>,
-    textAlign: MutableState<TextAlign>,
-    show: MutableState<Boolean>
+    onFontStyleChange: (SystemFontFamily) -> Unit,
+    onTextAlignChange: (TextAlign) -> Unit,
+    onVisibilityChange: () -> Unit,
 ){
+    val bgColorList = listOf(Color.Yellow, Color.Red, Color.Blue, Color.White)
+    val fontList = listOf(FontFamily.Default, FontFamily.Serif, FontFamily.Cursive, FontFamily.Monospace)
+    val textAlignList = listOf(
+        Pair(R.drawable.format_align_left_24px, TextAlign.Left),
+        Pair(R.drawable.format_align_center_24px, TextAlign.Center),
+        Pair(R.drawable.format_align_right_24px, TextAlign.Right),
+        Pair(R.drawable.format_align_justify_24px, TextAlign.Justify))
+
     Column (modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight(fraction = 0.6f)
@@ -257,7 +246,7 @@ fun CustomReader(
                 Icons.Rounded.Close,
                 contentDescription = null,
                 iconBoxModifier
-                    .clickable { show.value = !show.value }
+                    .clickable { onVisibilityChange() }
                     .padding(end = 10.dp)
             )
         }
@@ -270,30 +259,20 @@ fun CustomReader(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             val colorBlockModifier = iconBoxModifier.shadow(10.dp)
-            Canvas(
-                modifier = colorBlockModifier
-                    .clickable { background.value = Color.Yellow },
-                onDraw = { drawRect(Color.Yellow) }
-            )
-            Canvas(
-                modifier = colorBlockModifier.clickable { background.value = Color.Red },
-                onDraw = { drawRect(Color.Red) }
-            )
-            Canvas(
-                modifier = colorBlockModifier.clickable { background.value = Color.Blue },
-                onDraw = { drawRect(Color.Blue) }
-            )
-            Canvas(
-                modifier = colorBlockModifier.clickable { background.value = Color.White },
-                onDraw = { drawRect(Color.White) }
-            )
+            for (color in bgColorList) {
+                Canvas(
+                    modifier = colorBlockModifier.clickable { onBGColorChange(color) },
+                    onDraw = { drawRect(color) }
+                )
+            }
         }
+
         Text("Font chữ", modifier = textModifier)
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
             var showFontList by remember { mutableStateOf(false) }
-            val fontList: List<SystemFontFamily> = listOf(FontFamily.Default, FontFamily.Serif, FontFamily.Cursive, FontFamily.Monospace)
+
             Button(onClick = { showFontList = true }) {
                 Text("Show font list")
             }
@@ -305,10 +284,11 @@ fun CustomReader(
                 for (font in fontList) {
                     DropdownMenuItem(
                         text = { Text(font.toString().removePrefix("FontFamily.")) },
-                        onClick = { fontStyle.value = font })
+                        onClick = { onFontStyleChange(font) })
                 }
             }
         }
+
         Text("Kích cỡ chữ", modifier = textModifier)
         Row (
             modifier = Modifier.fillMaxWidth(),
@@ -329,51 +309,23 @@ fun CustomReader(
                     .clickable { fontSize.value++ }
             )
         }
+
         Text("Căn lề", modifier = textModifier)
         Row (
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.format_align_left_24px),
-                contentDescription = null,
-                modifier = iconBoxModifier
-                    .clickable { textAlign.value = TextAlign.Left }
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.format_align_center_24px),
-                contentDescription = null,
-                modifier = iconBoxModifier
-                    .clickable { textAlign.value = TextAlign.Center }
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.format_align_right_24px),
-                contentDescription = null,
-                modifier = iconBoxModifier
-                    .clickable { textAlign.value = TextAlign.Right }
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.format_align_justify_24px),
-                contentDescription = null,
-                modifier = iconBoxModifier
-                    .clickable { textAlign.value = TextAlign.Justify }
-            )
+            for (item in textAlignList) {
+                Icon(
+                    painter = painterResource(id = item.first),
+                    contentDescription = null,
+                    modifier = iconBoxModifier
+                        .clickable { onTextAlignChange(item.second) }
+                )
+            }
         }
     }
-}
-
-//inline fun Modifier.checkSTT(curChap: Int, dsChap: List<Chapter>, modifier: Modifier.() -> Modifier) : Modifier {
-//    return if (dsChap.none { it.STT < curChap }) {
-//        then(modifier(Modifier))
-//    } else {
-//        this
-//    }
-//}
-
-@Composable
-fun test(){
-    Text("hi")
 }
 
 @Preview (showBackground = true)

@@ -6,8 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.docln.ChapterContent
-import com.example.docln.NovelDetail
-import com.example.docln.RetrofitAPI
+import com.example.docln.plugins.RetrofitAPI
 import kotlinx.coroutines.launch
 
 class ChapterViewModel : ViewModel() {

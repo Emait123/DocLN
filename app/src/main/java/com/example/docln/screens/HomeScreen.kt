@@ -1,6 +1,7 @@
 package com.example.docln.screens
 
 import android.graphics.Paint.Style
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,6 +34,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ElevatedCard
@@ -144,11 +146,16 @@ fun HomeScreenContent (navController: NavController, modifier: Modifier) {
                     .padding(5.dp))
             Text(text = "MỚI", modifier = Modifier.padding(top = 5.dp, start = 5.dp))
         }
+
+        AnimatedVisibility(visible = novelList.isEmpty()) {
+            CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
+        }
         LazyRow () {
             itemsIndexed(items = novelList, key = {index, novel -> novel.id_truyen}) {
                     index, item -> NovelItem(navController, novel = item)
             }
         }
+
         Row(modifier = modifier.padding(start = 5.dp)) {
             Text(text = "SÁNG TÁC",
                 color = Color.White,
@@ -156,6 +163,9 @@ fun HomeScreenContent (navController: NavController, modifier: Modifier) {
                     .background(Color.Black)
                     .padding(5.dp))
             Text(text = "MỚI", modifier = Modifier.padding(top = 5.dp))
+        }
+        AnimatedVisibility(visible = novelList.isEmpty(), Modifier.align(Alignment.CenterHorizontally)) {
+            CircularProgressIndicator()
         }
         LazyRow () {
             itemsIndexed(items = novelList, key = {index, novel -> novel.id_truyen}) {
@@ -170,6 +180,9 @@ fun HomeScreenContent (navController: NavController, modifier: Modifier) {
                     .background(Color.Black)
                     .padding(5.dp))
             Text(text = "TOP", modifier = Modifier.padding(top = 5.dp))
+        }
+        AnimatedVisibility(visible = novelList.isEmpty(), Modifier.align(Alignment.CenterHorizontally)) {
+            CircularProgressIndicator()
         }
         LazyRow () {
             itemsIndexed(items = novelList, key = {index, novel -> novel.id_truyen}) {
