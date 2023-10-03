@@ -140,7 +140,10 @@ fun ChapterScreen(chapterID: String?) {
                     .align(Alignment.BottomCenter)
                     .background(Color.White)
                     //Thêm sự kiện click rỗng để thanh navbar không bị đóng khi bấm nhầm vào khoảng trống giữa các nút
-                    .clickable(interactionSource = interactionSource, indication = null, onClick = {})
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        onClick = {})
             )
         }
     }
@@ -214,6 +217,13 @@ fun BottomNavBar(
         }
     }
 }
+
+//@Composable
+//fun IconABC(
+//    modifier: Modifier
+//) {
+//    Icon(bitmap = abc, contentDescription = abc, modifier = modifier)
+//}
 
 @Composable
 fun CustomReader(
