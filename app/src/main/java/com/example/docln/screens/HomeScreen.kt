@@ -79,25 +79,8 @@ import com.example.docln.Routes
 import com.example.docln.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HomeScreen(navController: NavController) {
-    Scaffold(
-        topBar = { TopBar() },
-    ) { paddingValues -> HomeScreenContent(navController,Modifier.padding(paddingValues),)
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBar() {
-    TopAppBar(
-        title = { Text("Đọc LN") },
-        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Cyan)
-    )
-}
-
+//Từ Material 3, NavigationDrawer bị tách khỏi Scaffold
+//Cấu trúc: ModalNavigationDrawer (chứa Scaffold (chứa TopAppBar ) )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModalNavigationDrawerSample(navController: NavController) {
@@ -125,10 +108,25 @@ fun ModalNavigationDrawerSample(navController: NavController) {
                 }
             }
         },
+        gesturesEnabled = true,
         content = {
-            HomeScreen(navController)
-        },
-        gesturesEnabled = true
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("Đọc abc LN") },
+                        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Cyan),
+                        navigationIcon = { 
+                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                Icon(
+                                    imageVector = Icons.Default.Menu,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                ) },
+                content = { paddingValues -> HomeScreenContent(navController,Modifier.padding(paddingValues)) }
+            )
+        }
     )
 }
 

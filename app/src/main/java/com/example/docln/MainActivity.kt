@@ -17,7 +17,6 @@ import androidx.navigation.navArgument
 import com.example.docln.screens.HomeScreenContent
 import com.example.docln.screens.NovelDetailScreen
 import com.example.docln.screens.ChapterScreen
-import com.example.docln.screens.HomeScreen
 import com.example.docln.screens.ModalNavigationDrawerSample
 import com.example.docln.ui.theme.DocLNTheme
 
