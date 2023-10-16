@@ -37,3 +37,8 @@ data class ChapterContent(
     val STT: Int,
     val dsChuong: List<Chapter>
 )
+data class login(
+    val account_id: Int,
+    val password: String,
+    val username: String,
+)
