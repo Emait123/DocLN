@@ -14,10 +14,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.docln.screens.HomeScreenContent
 import com.example.docln.screens.NovelDetailScreen
 import com.example.docln.screens.ChapterScreen
 import com.example.docln.screens.HomeScreen
+import com.example.docln.screens.LoginScreen
+import com.example.docln.screens.RegisterScreen
 import com.example.docln.ui.theme.DocLNTheme
 
 
@@ -69,6 +70,17 @@ fun Navigation() {
             )
         ) {
             entry -> ChapterScreen(chapterID = entry.arguments?.getString("chapID"))
+        }
+//        qa sửa note
+        composable(
+            route = Routes.Login.route,
+        ) {
+                entry -> LoginScreen( navController,  account_id = entry.arguments?.getString("account_id"))
+        }
+        composable(
+            route = Routes.Register.route,
+        ) {
+                entry -> RegisterScreen( )
         }
     }
 }

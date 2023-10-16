@@ -59,7 +59,7 @@ import com.example.docln.ui.theme.DocLNTheme
 import com.example.docln.viewmodels.ChapterViewModel
 
 @Composable
-fun ChapterScreen(chapterID: String?) {
+    fun ChapterScreen(chapterID: String?) {
     val viewModel = viewModel<ChapterViewModel>()
     if (chapterID != null) {
         viewModel.ChapContent(chapterID.toInt())
@@ -140,7 +140,10 @@ fun ChapterScreen(chapterID: String?) {
                     .align(Alignment.BottomCenter)
                     .background(Color.White)
                     //Thêm sự kiện click rỗng để thanh navbar không bị đóng khi bấm nhầm vào khoảng trống giữa các nút
-                    .clickable(interactionSource = interactionSource, indication = null, onClick = {})
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        onClick = {})
             )
         }
     }
