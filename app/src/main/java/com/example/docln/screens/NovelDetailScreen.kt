@@ -81,6 +81,7 @@ fun NovelDetailScreen(navController: NavController, novelID: String?) {
                     .crossfade(true)
                     .build(),
                 contentDescription = "Novel Cover Image",
+
                 error = painterResource(id = R.drawable.nocover),
                 modifier = Modifier
                     .clip(RoundedCornerShape(10.dp))

@@ -106,6 +106,7 @@ import kotlinx.coroutines.launch
 
 
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -148,41 +149,58 @@ fun TopBar(navController : NavController) {
     if (shownavMenu) {
         showMenu(onDismissRequest = { shownavMenu = false },navController)
     }
-}
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun ModalNavigationDrawerSample(navController: NavController, modifier: Modifier, drawerState: DrawerState) {
-////    val drawerState = rememberDrawerState(DrawerValue.Closed)
-//    val scope = rememberCoroutineScope()
-//    // icons to mimic drawer destinations
-//    val items = listOf(Icons.Default.Favorite, Icons.Default.Face, Icons.Default.Email)
-//    val selectedItem = remember { mutableStateOf(items[0]) }
-//    ModalNavigationDrawer(
-//        drawerState = drawerState,
-//        drawerContent = {
-//            ModalDrawerSheet {
-//                Spacer(Modifier.height(12.dp))
-//                items.forEach { item ->
-//                    NavigationDrawerItem(
-//                        icon = { Icon(item, contentDescription = null) },
-//                        label = { Text(item.name) },
-//                        selected = item == selectedItem.value,
-//                        onClick = {
-//                            scope.launch { drawerState.close() }
-//                            selectedItem.value = item
-//                        },
-//                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-//                    )
-//                }
-//            }
-//        },
-//        content = {
-//            HomeScreenContent(navController, modifier)
-//        },
-//        gesturesEnabled = true
-//    )
-//}
+//Từ Material 3, NavigationDrawer bị tách khỏi Scaffold
+//Cấu trúc: ModalNavigationDrawer (chứa Scaffold (chứa TopAppBar ) )
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ModalNavigationDrawerSample(navController: NavController) {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    // icons to mimic drawer destinations
+    val items = listOf(Icons.Default.Favorite, Icons.Default.Face, Icons.Default.Email)
+    val selectedItem = remember { mutableStateOf(items[0]) }
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                Spacer(Modifier.height(12.dp))
+                items.forEach { item ->
+                    NavigationDrawerItem(
+                        icon = { Icon(item, contentDescription = null) },
+                        label = { Text(item.name) },
+                        selected = item == selectedItem.value,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            selectedItem.value = item
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    )
+                }
+            }
+        },
+        gesturesEnabled = true,
+        content = {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("Đọc abc LN") },
+                        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Cyan),
+                        navigationIcon = { 
+                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                Icon(
+                                    imageVector = Icons.Default.Menu,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                ) },
+                content = { paddingValues -> HomeScreenContent(navController,Modifier.padding(paddingValues)) }
+            )
+        }
+    )
+
+}
 
 @Composable
 fun HomeScreenContent (navController: NavController, modifier: Modifier) {

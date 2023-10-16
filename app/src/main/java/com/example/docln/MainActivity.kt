@@ -19,6 +19,7 @@ import com.example.docln.screens.ChapterScreen
 import com.example.docln.screens.HomeScreen
 import com.example.docln.screens.LoginScreen
 import com.example.docln.screens.RegisterScreen
+import com.example.docln.screens.ModalNavigationDrawerSample
 import com.example.docln.ui.theme.DocLNTheme
 
 
@@ -44,7 +45,7 @@ fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Routes.Home.route ) {
         composable(route = Routes.Home.route) {
-            HomeScreen(navController)
+            ModalNavigationDrawerSample(navController)
         }
         composable(
             route = Routes.NovelDetail.route + "/{novelID}",
