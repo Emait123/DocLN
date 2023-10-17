@@ -16,6 +16,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
@@ -23,12 +26,17 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,11 +58,14 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.docln.Chapter
+import com.example.docln.NovelDetail
 import com.example.docln.R
 import com.example.docln.Routes
 import com.example.docln.ui.theme.DocLNTheme
 import com.example.docln.viewmodels.NovelViewModel
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NovelDetailScreen(navController: NavController, novelID: String?) {
     val viewModel = viewModel<NovelViewModel>()
@@ -66,22 +77,39 @@ fun NovelDetailScreen(navController: NavController, novelID: String?) {
         return
     }
     val novel = res.first()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(novel.ten_truyen) },
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Cyan),
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = null
+                        )
+                    }
+                }
+            ) },
+        content = { paddingValues -> NovelDetailContent(navController, Modifier.padding(paddingValues), novel) }
+    )
+}
+
+@Composable
+fun NovelDetailContent(navController: NavController, modifier: Modifier, novel : NovelDetail) {
     val dsChuong = novel.dsChuong.sortedBy { it.STT }
-
     var showDialog by remember{ mutableStateOf(false) }
-
-    LazyColumn (modifier = Modifier
+    LazyColumn (modifier = modifier
         .fillMaxSize()
         .padding(10.dp)) {
         item {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-//                    .data(R.drawable.nocover)
                     .data(novel.coverImg)
                     .crossfade(true)
                     .build(),
                 contentDescription = "Novel Cover Image",
-
                 error = painterResource(id = R.drawable.nocover),
                 modifier = Modifier
                     .clip(RoundedCornerShape(10.dp))
@@ -97,30 +125,58 @@ fun NovelDetailScreen(navController: NavController, novelID: String?) {
                     .fillMaxWidth()
                     .wrapContentWidth(align = Alignment.CenterHorizontally)
             )
-            Text(
-                text = "Tác giả: ",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
-                    .wrapContentWidth(align = Alignment.Start)
-            )
-            Text(
-                text = "Minh họa: ",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .wrapContentWidth(align = Alignment.Start)
-                    .padding(start = 10.dp, bottom = 10.dp),
-            )
-            Text(
-                text = "Tag: ",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .wrapContentWidth(align = Alignment.Start)
-                    .padding(start = 10.dp, bottom = 10.dp),
-            )
+            Row (modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp)) {
+                Text(
+                    text = "Tác giả: ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+//                        .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
+                        .wrapContentWidth(align = Alignment.Start)
+                )
+                Text(
+                    text = "Asato Asato",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+//                        .wrapContentWidth(align = Alignment.Start)
+                )
+            }
+            Row (modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp)) {
+                Text(
+                    text = "Minh họa: ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .wrapContentWidth(align = Alignment.Start)
+//                        .padding(start = 10.dp, bottom = 10.dp),
+                )
+                Text(
+                    text = "Shirabi",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                )
+            }
+            Row (modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp)) {
+                Text(
+                    text = "Tag: ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .wrapContentWidth(align = Alignment.Start)
+//                        .padding(start = 10.dp, bottom = 10.dp),
+                )
+                Text(
+                    text = "Action, Drama, Science, Fiction, Mecha, Military",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                )
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -351,20 +407,24 @@ fun InputRating(onDismissRequest: () -> Unit) {
             .background(Color.LightGray)
             .fillMaxWidth()
             .fillMaxHeight(fraction = 0.4f),
-            shape = RoundedCornerShape(10.dp)
+            shape = RoundedCornerShape(20.dp),
         ) {
-            Column (modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween){
+            Column (modifier = Modifier.padding(10.dp), verticalArrangement = Arrangement.SpaceBetween){
                 Row (modifier = Modifier.weight(1f)) {
                     Text("Đánh giá: ")
                     StarRating(score = 0.0)
                 }
                 OutlinedTextField(
-                    modifier = Modifier.weight(3f).fillMaxWidth(),
+                    modifier = Modifier
+                        .weight(3f)
+                        .fillMaxWidth(),
                     value = rating,
                     onValueChange = { rating = it },
                     label = { Text("Đánh giá của bạn") }
                 )
-                Row (modifier = Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Row (modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     Button(onClick = { /*TODO*/ }) {
                         Text("Gửi")
                     }

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
@@ -28,9 +29,14 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -42,24 +48,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.SystemFontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.docln.ChapterContent
 import com.example.docln.R
 import com.example.docln.ui.theme.DocLNTheme
 import com.example.docln.viewmodels.ChapterViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-    fun ChapterScreen(chapterID: String?) {
+fun ChapterScreen(navController : NavController, chapterID: String?) {
     val viewModel = viewModel<ChapterViewModel>()
     if (chapterID != null) {
         viewModel.ChapContent(chapterID.toInt())
@@ -69,10 +80,34 @@ import com.example.docln.viewmodels.ChapterViewModel
         return
     }
     val content = res.first()
-    val chap = content.noidung
 
-//    val curChap = content.STT
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopAppBar(
+                title = { Text(
+                    text = content.ten_chuong,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                ) },
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Cyan),
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = null
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior,
+            ) },
+        content = { paddingValues -> ChapterScreenContent(navController, Modifier.padding(paddingValues), content) }
+    )
+}
 
+@Composable
+fun ChapterScreenContent(navController: NavController, modifier: Modifier, content : ChapterContent) {
     var isVisible by remember { mutableStateOf(false) }
     var backgroundColor by remember { mutableStateOf(Color.White) }
     val fontColor by remember { mutableStateOf(Color.Black) }
@@ -81,10 +116,10 @@ import com.example.docln.viewmodels.ChapterViewModel
     var textAlign by remember { mutableStateOf(TextAlign.Justify) }
 
     val imgRegex = """`img`""".toRegex()
-    val result: List<String> = chap.split(imgRegex)
+    val result: List<String> = content.noidung.split(imgRegex)
 
     val interactionSource = MutableInteractionSource()
-    Box(modifier = Modifier
+    Box(modifier = modifier
         .fillMaxSize()
         .background(color = backgroundColor),
     )
@@ -217,13 +252,6 @@ fun BottomNavBar(
         }
     }
 }
-
-//@Composable
-//fun IconABC(
-//    modifier: Modifier
-//) {
-//    Icon(bitmap = abc, contentDescription = abc, modifier = modifier)
-//}
 
 @Composable
 fun CustomReader(
