@@ -16,9 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
@@ -26,7 +24,6 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,6 +31,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -44,7 +42,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -63,7 +60,6 @@ import com.example.docln.R
 import com.example.docln.Routes
 import com.example.docln.ui.theme.DocLNTheme
 import com.example.docln.viewmodels.NovelViewModel
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -111,10 +107,11 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
                     .build(),
                 contentDescription = "Novel Cover Image",
                 error = painterResource(id = R.drawable.nocover),
+                placeholder = painterResource(id = R.drawable.nocover),
                 modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .fillMaxWidth()
-                    .wrapContentWidth(align = Alignment.CenterHorizontally)
+//                    .clip(RoundedCornerShape(10.dp))
+                    .fillMaxSize()
+//                    .wrapContentWidth(align = Alignment.CenterHorizontally)
                     .padding(10.dp)
             )
             Text(
@@ -254,7 +251,7 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
 }
 
 @Composable
-fun StarRating(modifier: Modifier = Modifier, color: Color = Color.Yellow, score: Double) {
+fun StarRating(modifier: Modifier = Modifier, color: Color = Color.Yellow, score: Float) {
     //Mặc định số sao là 5
     val filledStars = (score).toInt()
     val halfStar: Boolean = kotlin.math.floor(score) < score
@@ -361,7 +358,7 @@ fun ExpandRating() {
             Row {
                 Icon(Icons.Rounded.Star, contentDescription = null)
                 Text("Đánh giá: ")
-                StarRating(Modifier.padding(horizontal = 10.dp), score = 3.4)
+                StarRating(Modifier.padding(horizontal = 10.dp), score = 3.4f)
                 Text("(3.4)")
             }
             if (expanded) {
@@ -370,7 +367,7 @@ fun ExpandRating() {
                         horizontalArrangement = Arrangement.SpaceBetween)
                     {
                         Text("User A")
-                        StarRating(score = 4.3)
+                        StarRating(score = 4.3f)
                     }
                     Text("Đánh giá ABC")
                 }
@@ -379,7 +376,7 @@ fun ExpandRating() {
                         horizontalArrangement = Arrangement.SpaceBetween)
                     {
                         Text("User B")
-                        StarRating(score = 3.6)
+                        StarRating(score = 3.6f)
                     }
                     Text("Đánh giá ABC")
                 }
@@ -388,7 +385,7 @@ fun ExpandRating() {
                         horizontalArrangement = Arrangement.SpaceBetween)
                     {
                         Text("User C")
-                        StarRating(score = 2.0)
+                        StarRating(score = 2.0f)
                     }
                     Text("Đánh giá ABC")
                 }
@@ -401,7 +398,8 @@ fun ExpandRating() {
 @Composable
 fun InputRating(onDismissRequest: () -> Unit) {
     Dialog(onDismissRequest = { onDismissRequest() }) {
-        var rating: String by remember{ mutableStateOf("") }
+        var rating by remember { mutableStateOf(0f) }
+        var comment: String by remember{ mutableStateOf("") }
 
         Card (modifier = Modifier
             .background(Color.LightGray)
@@ -412,20 +410,30 @@ fun InputRating(onDismissRequest: () -> Unit) {
             Column (modifier = Modifier.padding(10.dp), verticalArrangement = Arrangement.SpaceBetween){
                 Row (modifier = Modifier.weight(1f)) {
                     Text("Đánh giá: ")
-                    StarRating(score = 0.0)
+                    StarRating(score = rating)
+                    Text(
+                        text = " (%.2f)".format(rating),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
+                Slider(
+                    value = rating,
+                    onValueChange = { rating = it },
+                    valueRange = 0f..5f,
+                    steps = 0
+                )
                 OutlinedTextField(
                     modifier = Modifier
                         .weight(3f)
                         .fillMaxWidth(),
-                    value = rating,
-                    onValueChange = { rating = it },
+                    value = comment,
+                    onValueChange = { comment = it },
                     label = { Text("Đánh giá của bạn") }
                 )
                 Row (modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    Button(onClick = { /*TODO*/ }) {
+                    Button(onClick = { onDismissRequest() }) {
                         Text("Gửi")
                     }
                     Button(onClick = { onDismissRequest() }) {

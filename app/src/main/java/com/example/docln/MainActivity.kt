@@ -20,9 +20,11 @@ import com.example.docln.screens.HomeScreen
 import com.example.docln.screens.LoginScreen
 import com.example.docln.screens.RegisterScreen
 import com.example.docln.ui.theme.DocLNTheme
+import com.google.firebase.auth.FirebaseAuth
 
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

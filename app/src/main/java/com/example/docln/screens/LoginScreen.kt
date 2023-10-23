@@ -30,12 +30,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.docln.Routes
+import com.example.docln.viewmodels.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController,account_id :String?) {
+    val viewModel = viewModel<LoginViewModel>()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -95,7 +99,10 @@ fun LoginScreen(navController: NavController,account_id :String?) {
                     )
 
                     OutlinedButton(
-                        onClick = {  },
+                        onClick = {
+                            viewModel.checkUser(username, password)
+                            val res = viewModel.isUserLogin
+                            if (res) { navController.popBackStack() } },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)

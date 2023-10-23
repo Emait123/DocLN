@@ -65,6 +65,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.docln.ChapterContent
 import com.example.docln.R
+import com.example.docln.Routes
 import com.example.docln.ui.theme.DocLNTheme
 import com.example.docln.viewmodels.ChapterViewModel
 
@@ -167,6 +168,8 @@ fun ChapterScreenContent(navController: NavController, modifier: Modifier, conte
         }
         if (isVisible) {
             BottomNavBar(
+                navController = navController,
+                content = content,
                 backgroundChange = { backgroundColor = it },
                 fontSize = fontSize,
                 fontSyleChange = { fontStyle = it },
@@ -186,12 +189,17 @@ fun ChapterScreenContent(navController: NavController, modifier: Modifier, conte
 
 @Composable
 fun BottomNavBar(
+    navController: NavController,
+    content : ChapterContent,
     backgroundChange : (Color) -> Unit,
     fontSize: MutableState<Int>,
     fontSyleChange : (SystemFontFamily) -> Unit,
     textAlignChange: (TextAlign) -> Unit,
     modifier: Modifier
 ) {
+    val curChapID = content.STT
+    val chapNum = content.dsChuong.count()
+
     Box(modifier = modifier) {
         var showCustomText by remember { mutableStateOf(false) }
         Row (
@@ -207,7 +215,12 @@ fun BottomNavBar(
                 Icons.Rounded.ArrowBack,
                 contentDescription = null,
                 modifier = iconModifier
-                    .clickable {  }
+                    .clickable {
+                        if (curChapID > 1) {
+                            val prevChap = curChapID - 1
+                            navController.navigate(Routes.Chapter.withArgs(prevChap.toString()))
+                        }
+                    }
             )
             Icon(
                 Icons.Rounded.Home,
@@ -237,7 +250,12 @@ fun BottomNavBar(
                 Icons.Rounded.ArrowForward,
                 contentDescription = null,
                 modifier = iconModifier
-                    .clickable {  }
+                    .clickable {
+                        if (curChapID < chapNum) {
+                            val nextChap = curChapID + 1
+                            navController.navigate(Routes.Chapter.withArgs(nextChap.toString()))
+                        }
+                    }
             )
         }
 

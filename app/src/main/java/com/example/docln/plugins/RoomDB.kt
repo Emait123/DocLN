@@ -1,7 +1,9 @@
 package com.example.docln.plugins
 
+import android.app.Application
 import android.content.ClipData.Item
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Database
@@ -14,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "truyen")
 data class RoomNovel(
-    @PrimaryKey val id_truyen: Int,
+    @PrimaryKey(autoGenerate = true) val idTruyen: Int,
     @ColumnInfo(name = "ten_truyen") val tenTruyen: String,
     @ColumnInfo(name = "coverImg") val coverImg: String
 )
@@ -35,24 +37,25 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context): AppDatabase {
             // if the Instance is not null, return it, otherwise create a new database instance.
-            return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, AppDatabase::class.java, "novel_database")
-                    .build()
-                    .also { Instance = it }
+            val tempInstance = Instance
+            if (tempInstance != null) { return tempInstance }
+
+            synchronized(this) {
+                val instance = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "novel_database").build()
+                Instance = instance
+                return instance
             }
         }
     }
 }
 
-interface NovelRepository {
-    fun getAllNovel(): Flow<List<RoomNovel>>
+class NovelRepository (application: Application) {
+    private var novelDao : NovelDao
+
+    init {
+        val database = AppDatabase.getDatabase(application)
+        novelDao = database.novelDao()
+    }
+
+    val getAllNovel : Flow<List<RoomNovel>> = novelDao.getAll()
 }
-
-class OfflineNovelRepository (private val novelDao: NovelDao) : NovelRepository {
-    override fun getAllNovel(): Flow<List<RoomNovel>> = novelDao.getAll()
-
-}
-
-//override val itemsRepository: NovelRepository by lazy {
-//    OfflineNovelRepository(AppDatabase.getDatabase(context).novelDao())
-//}

@@ -65,6 +65,7 @@ import coil.request.ImageRequest
 import com.example.docln.Novel
 import com.example.docln.R
 import com.example.docln.Routes
+import com.example.docln.viewmodels.LoginViewModel
 import com.example.docln.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
@@ -74,7 +75,13 @@ import kotlinx.coroutines.launch
 fun HomeScreen(navController: NavController) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    // icons to mimic drawer destinations
+
+    val viewModel = viewModel<LoginViewModel>()
+    val loginState = viewModel.isUserLogin
+    val userName = viewModel.userName
+    val userID = viewModel.userID
+
+//    val loginState = true
     val menuList = listOf(Routes.Home, Routes.Ranking, Routes.Search)
     val userList = listOf(Routes.Login, Routes.Register)
     val selectedItem = remember { mutableStateOf(menuList[0]) }
@@ -85,6 +92,7 @@ fun HomeScreen(navController: NavController) {
         drawerContent = {
             ModalDrawerSheet {
                 Column (modifier = Modifier.padding(12.dp)) {
+                    Text("Xin chào $userName")
                     Text(text = "Menu")
                     menuList.forEach { item ->
                         NavigationDrawerItem(
@@ -99,19 +107,21 @@ fun HomeScreen(navController: NavController) {
                         )
                     }
                     Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(10.dp))
-                    Text(text = "User")
-                    userList.forEach { item ->
-                        NavigationDrawerItem(
-                            icon = { Icon(imageVector = item.icon, contentDescription = item.name) },
-                            label = { Text(item.name) },
-                            selected = (item == selectedItem.value),
-                            onClick = {
-                                scope.launch { drawerState.close() }
-                                selectedItem.value = item
-                                navController.navigate(item.route)
-                            },
-                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                        )
+                    if (!loginState) {
+                        Text(text = "User")
+                        userList.forEach { item ->
+                            NavigationDrawerItem(
+                                icon = { Icon(imageVector = item.icon, contentDescription = item.name) },
+                                label = { Text(item.name) },
+                                selected = (item == selectedItem.value),
+                                onClick = {
+                                    scope.launch { drawerState.close() }
+                                    selectedItem.value = item
+                                    navController.navigate(item.route)
+                                },
+                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                            )
+                        }
                     }
                 }
             }
@@ -131,11 +141,13 @@ fun HomeScreen(navController: NavController) {
                             }
                         },
                         actions = {
-                            IconButton(onClick = { navController.navigate(Routes.Login.route) }) {
-                                Icon(
-                                    imageVector = Icons.Filled.AccountCircle,
-                                    contentDescription = "Trang đăng nhập"
-                                )
+                            if (!loginState) {
+                                IconButton(onClick = { navController.navigate(Routes.Login.route) }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.AccountCircle,
+                                        contentDescription = "Trang đăng nhập"
+                                    )
+                                }
                             }
                         }
                 ) },

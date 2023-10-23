@@ -1,7 +1,9 @@
 package com.example.docln
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import com.google.gson.annotations.SerializedName
+
+
+
 
 data class DataModel (
     val category: String,
@@ -37,8 +39,25 @@ data class ChapterContent(
     val STT: Int,
     val dsChuong: List<Chapter>
 )
+
 data class login(
     val account_id: Int,
     val password: String,
     val username: String,
 )
+
+data class LoginResponse(
+    @field:SerializedName("UserId") var userId: String,
+    @field:SerializedName("Password") var Password: String
+) {
+
+    @SerializedName("id")
+    var id: String? = null
+
+    @SerializedName("displayName")
+    var displayName: String? = null
+
+    @SerializedName("ResponseMessage")
+    var responseMessage: String? = null
+
+}
