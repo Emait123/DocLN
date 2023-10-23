@@ -19,6 +19,7 @@ import com.example.docln.screens.ChapterScreen
 import com.example.docln.screens.HomeScreen
 import com.example.docln.screens.LoginScreen
 import com.example.docln.screens.RegisterScreen
+import com.example.docln.screens.SearchScreen
 import com.example.docln.ui.theme.DocLNTheme
 
 
@@ -81,6 +82,11 @@ fun Navigation() {
             route = Routes.Register.route,
         ) {
                 entry -> RegisterScreen(navController)
+        }
+        composable(
+            route = Routes.Search.route,
+        ) {
+                entry -> SearchScreen(navController)
         }
     }
 }
