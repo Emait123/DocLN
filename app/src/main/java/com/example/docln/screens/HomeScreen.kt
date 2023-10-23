@@ -102,6 +102,7 @@ fun HomeScreen(navController: NavController) {
                             onClick = {
                                 scope.launch { drawerState.close() }
                                 selectedItem.value = item
+                                navController.navigate(item.route)
                             },
                             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                         )
