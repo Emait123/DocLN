@@ -18,6 +18,8 @@ import com.example.docln.screens.NovelDetailScreen
 import com.example.docln.screens.ChapterScreen
 import com.example.docln.screens.HomeScreen
 import com.example.docln.screens.LoginScreen
+import com.example.docln.screens.RankingItem
+import com.example.docln.screens.RankingScreen
 import com.example.docln.screens.RegisterScreen
 import com.example.docln.screens.SearchScreen
 import com.example.docln.ui.theme.DocLNTheme
@@ -87,6 +89,15 @@ fun Navigation() {
             route = Routes.Search.route,
         ) {
                 entry -> SearchScreen(navController)
+        }
+//        thêm bảng xếp hạng mới
+        composable(
+            route = Routes.Ranking.route,
+        ) {
+
+                entry ->
+            val rankingItems = null;
+            rankingItems?.let { RankingScreen(navController, it) }
         }
     }
 }
