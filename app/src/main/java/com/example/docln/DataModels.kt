@@ -59,15 +59,15 @@ data class ReviewContent(
 )
 
 data class LoginResponse(
-    @field:SerializedName("UserId") var userId: String,
+    @field:SerializedName("UserId") var userId: Int,
     @field:SerializedName("Password") var Password: String
 ) {
 
     @SerializedName("id")
-    var id: String? = null
+    var id: Int = 0
 
     @SerializedName("displayName")
-    var displayName: String? = null
+    var displayName: String = ""
 
     @SerializedName("ResponseMessage")
     var responseMessage: String? = null

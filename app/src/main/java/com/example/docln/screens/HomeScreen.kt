@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
@@ -76,13 +77,12 @@ fun HomeScreen(navController: NavController) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    val viewModel = viewModel<LoginViewModel>()
-    val loginState = viewModel.isUserLogin
+    val viewModel = viewModel<MainViewModel>()
+    viewModel.checkLoginState()
+    val loginState = viewModel.isUserLoggedIn
     val userName = viewModel.userName
-    val userID = viewModel.userID
 
-//    val loginState = true
-    val menuList = listOf(Routes.Home, Routes.Ranking, Routes.Search)
+    val menuList = listOf(Routes.Home, Routes.Search)
     val userList = listOf(Routes.Login, Routes.Register)
     val selectedItem = remember { mutableStateOf(menuList[0]) }
 
@@ -147,6 +147,15 @@ fun HomeScreen(navController: NavController) {
                                     Icon(
                                         imageVector = Icons.Filled.AccountCircle,
                                         contentDescription = "Trang đăng nhập"
+                                    )
+                                }
+                            } else {
+                                IconButton(onClick = {
+                                    viewModel.logOut()
+                                    viewModel.checkLoginState() }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.ExitToApp,
+                                        contentDescription = "Đăng xuất"
                                     )
                                 }
                             }

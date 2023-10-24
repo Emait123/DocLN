@@ -16,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.docln.plugins.Graph
 import com.example.docln.screens.NovelDetailScreen
 import com.example.docln.screens.ChapterScreen
 import com.example.docln.screens.HomeScreen
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Graph.provide(this)
         setContent {
             DocLNTheme {
                 // A surface container using the 'background' color from the theme

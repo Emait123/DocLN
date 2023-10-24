@@ -8,7 +8,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.docln.LoginResponse
+import com.example.docln.plugins.DBRepository
+import com.example.docln.plugins.Graph
 import com.example.docln.plugins.RetrofitAPI
+import com.example.docln.plugins.RoomAccount
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -16,7 +19,9 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val repository: DBRepository = Graph.repository
+) : ViewModel() {
     var isUserLogin : Boolean by mutableStateOf(false)
         private set
     var errorMessage: String by mutableStateOf("")
@@ -26,18 +31,14 @@ class LoginViewModel : ViewModel() {
 //    var auth = FirebaseAuth.getInstance()
 
     fun checkUser(loginName : String, password : String) {
-        val login = LoginResponse(loginName, password)
-        println(login)
-
         viewModelScope.launch {
             val apiService = RetrofitAPI.getInstance()
             try {
                 val res = apiService.loginUser(loginName, password)
-                println(res)
                 if (res.responseMessage == "ok") {
+                    val account = RoomAccount(accountID = res.id, displayName = res.displayName)
+                    repository.logIn(account)
                     isUserLogin = true
-                    userName = res.displayName.toString()
-                    userID = res.userId
                 }
             }
             catch (e: Exception) {
