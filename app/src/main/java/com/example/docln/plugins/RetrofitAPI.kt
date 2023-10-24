@@ -41,6 +41,9 @@ interface RetrofitAPI {
         @Query("rating") rating : Float,
         @Query("content") content : String): List<ReviewContent>
 
+    @GET("search")
+    suspend fun searchNovel( @Query("name") name: String ): List<Novel>
+
 
     companion object {
         var retrofitAPI: RetrofitAPI? = null
