@@ -1,5 +1,6 @@
 package com.example.docln.screens
 
+import android.content.Intent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,6 +51,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -57,6 +59,7 @@ import coil.request.ImageRequest
 import com.example.docln.Chapter
 import com.example.docln.NovelDetail
 import com.example.docln.R
+import com.example.docln.ReviewContent
 import com.example.docln.Routes
 import com.example.docln.ui.theme.DocLNTheme
 import com.example.docln.viewmodels.NovelViewModel
@@ -96,6 +99,8 @@ fun NovelDetailScreen(navController: NavController, novelID: String?) {
 fun NovelDetailContent(navController: NavController, modifier: Modifier, novel : NovelDetail) {
     val dsChuong = novel.dsChuong.sortedBy { it.STT }
     var showDialog by remember{ mutableStateOf(false) }
+    val context = LocalContext.current
+
     LazyColumn (modifier = modifier
         .fillMaxSize()
         .padding(10.dp)) {
@@ -132,7 +137,7 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
                         .wrapContentWidth(align = Alignment.Start)
                 )
                 Text(
-                    text = "Asato Asato",
+                    text = novel.tacgia,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier
@@ -150,7 +155,7 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
 //                        .padding(start = 10.dp, bottom = 10.dp),
                 )
                 Text(
-                    text = "Shirabi",
+                    text = novel.minhhoa,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier
@@ -167,7 +172,7 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
 //                        .padding(start = 10.dp, bottom = 10.dp),
                 )
                 Text(
-                    text = "Action, Drama, Science, Fiction, Mecha, Military",
+                    text = novel.tag,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier
@@ -187,7 +192,7 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
                         .padding(10.dp)
                 )
                 Text(
-                    text = "Hoàn thành",
+                    text = novel.trangthai,
                     modifier = Modifier
                         .background(color = Color.Green, shape = RoundedCornerShape(10.dp))
                         .padding(5.dp)
@@ -212,7 +217,16 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
                     )
                     Text("Đánh giá")
                 }
-                Column (horizontalAlignment = Alignment.CenterHorizontally) {
+                Column (horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.clickable {
+                        val sendIntent: Intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, novel.ten_truyen)
+                            type = "text/plain"
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        startActivity(context, shareIntent, null)
+                    }) {
                     Icon(
                         Icons.Rounded.Share,
                         contentDescription = "Chia sẻ"
@@ -230,7 +244,7 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
             ExpandDesc(novel.tomtat)
             Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
 
-            ExpandRating()
+            ExpandRating(novel.review)
             Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
 
             Text("Danh sách chương", modifier = Modifier.padding(10.dp))
@@ -345,7 +359,7 @@ fun ExpandDesc(desc : String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpandRating() {
+fun ExpandRating(reviews : List<ReviewContent>) {
     var expanded by remember { mutableStateOf(false) }
     Card (
         modifier = Modifier
@@ -362,32 +376,16 @@ fun ExpandRating() {
                 Text("(3.4)")
             }
             if (expanded) {
-                Column (modifier = Modifier.padding(5.dp)) {
-                    Row (modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween)
-                    {
-                        Text("User A")
-                        StarRating(score = 4.3f)
+                reviews.forEach { e ->
+                    Column (modifier = Modifier.padding(5.dp)) {
+                        Row (modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween)
+                        {
+                            Text(e.displayName)
+                            StarRating(score = e.rating)
+                        }
+                        Text(e.content)
                     }
-                    Text("Đánh giá ABC")
-                }
-                Column (modifier = Modifier.padding(5.dp)) {
-                    Row (modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween)
-                    {
-                        Text("User B")
-                        StarRating(score = 3.6f)
-                    }
-                    Text("Đánh giá ABC")
-                }
-                Column (modifier = Modifier.padding(5.dp)) {
-                    Row (modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween)
-                    {
-                        Text("User C")
-                        StarRating(score = 2.0f)
-                    }
-                    Text("Đánh giá ABC")
                 }
             }
         }
@@ -397,8 +395,9 @@ fun ExpandRating() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputRating(onDismissRequest: () -> Unit) {
+    val viewModel = viewModel<NovelViewModel>()
     Dialog(onDismissRequest = { onDismissRequest() }) {
-        var rating by remember { mutableStateOf(0f) }
+        var rating: Float by remember { mutableStateOf(0f) }
         var comment: String by remember{ mutableStateOf("") }
 
         Card (modifier = Modifier
@@ -433,7 +432,11 @@ fun InputRating(onDismissRequest: () -> Unit) {
                 Row (modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    Button(onClick = { onDismissRequest() }) {
+                    Button(onClick = {
+                        println(rating)
+                        println(comment)
+                        viewModel.sendReview(rating, comment)
+                        onDismissRequest() }) {
                         Text("Gửi")
                     }
                     Button(onClick = { onDismissRequest() }) {
@@ -449,6 +452,6 @@ fun InputRating(onDismissRequest: () -> Unit) {
 @Composable
 fun GreetingPreview() {
     DocLNTheme {
-        ExpandRating()
+//        ExpandRating()
     }
 }

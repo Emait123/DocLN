@@ -4,6 +4,7 @@ import com.example.docln.ChapterContent
 import com.example.docln.LoginResponse
 import com.example.docln.Novel
 import com.example.docln.NovelDetail
+import com.example.docln.ReviewContent
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
@@ -27,8 +28,16 @@ interface RetrofitAPI {
     suspend fun getChapterContent(@Path(value="chap_id", encoded = true) id:Int): ChapterContent
 
     @GET("login")
-    suspend fun loginUser(@Query("UserId") userID : String , @Query("Password") password : String): LoginResponse
-//    suspend fun loginUser(@Body login: LoginResponse): String
+    suspend fun loginUser(
+        @Query("UserId") userID : String ,
+        @Query("Password") password : String): LoginResponse
+
+    @GET("review")
+    suspend fun sendReview(
+        @Query("novelID") novelID : Int,
+        @Query("userID") userID : Int,
+        @Query("rating") rating : Float,
+        @Query("content") content : String): List<ReviewContent>
 
 
     companion object {

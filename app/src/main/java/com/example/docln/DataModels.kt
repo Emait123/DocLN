@@ -29,6 +29,11 @@ data class NovelDetail (
     var ten_truyen: String = "de",
     val coverImg: String = "",
     val tomtat: String,
+    val tacgia: String,
+    val minhhoa: String,
+    val tag: String,
+    val trangthai: String,
+    val review: List<ReviewContent>,
     val dsChuong: List<Chapter>
 )
 
@@ -44,6 +49,12 @@ data class login(
     val account_id: Int,
     val password: String,
     val username: String,
+)
+
+data class ReviewContent(
+    val displayName: String,
+    val rating: Float,
+    val content: String
 )
 
 data class LoginResponse(

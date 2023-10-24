@@ -19,13 +19,14 @@ import kotlinx.coroutines.launch
 class MainViewModel() : ViewModel() {
     var novelListResponse:List<Novel> by mutableStateOf(listOf())
     var errorMessage: String by mutableStateOf("")
-//    private val novelRepository : NovelRepository = NovelRepository(application)
+//    private val novelRepository : NovelRepository = NovelRepository(appObj)
 
     fun getNovelList() {
         viewModelScope.launch {
             val apiService = RetrofitAPI.getInstance()
             try {
                 val novelList = apiService.getNovelList()
+//                if (novelList.isEmpty()) { novelListResponse. = novelRepository.getAllNovel }
                 novelListResponse = novelList
             }
             catch (e: Exception) {
