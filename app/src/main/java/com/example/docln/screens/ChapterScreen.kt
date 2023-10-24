@@ -49,9 +49,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.SystemFontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -69,12 +71,17 @@ import com.example.docln.Routes
 import com.example.docln.ui.theme.DocLNTheme
 import com.example.docln.viewmodels.ChapterViewModel
 
+//Màn hình hiển thị nội dung chương truyện
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChapterScreen(navController : NavController, chapterID: String?) {
+fun ChapterScreen(
+//    viewModel: ChapterViewModel,
+    navController : NavController,
+    novelID: String?, chapterID: String?) {
     val viewModel = viewModel<ChapterViewModel>()
-    if (chapterID != null) {
-        viewModel.ChapContent(chapterID.toInt())
+    if (chapterID != null && novelID != null) {
+        viewModel.ChapContent(novelID.toInt(), chapterID.toInt())
     }
     val res = viewModel.chapContentResponse
     if (res.isEmpty()){
@@ -94,7 +101,9 @@ fun ChapterScreen(navController : NavController, chapterID: String?) {
                 ) },
                 colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Cyan),
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+                        // Thêm args để quay về trang nội dung truyện dù trong backstack có bao nhiêu chương truyện
+                        navController.popBackStack(Routes.NovelDetail.withArgs(content.id_truyen.toString()), false) }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = null
@@ -109,10 +118,17 @@ fun ChapterScreen(navController : NavController, chapterID: String?) {
 
 @Composable
 fun ChapterScreenContent(navController: NavController, modifier: Modifier, content : ChapterContent) {
+    val viewModel = viewModel<ChapterViewModel>()
+
     var isVisible by remember { mutableStateOf(false) }
     var backgroundColor by remember { mutableStateOf(Color.White) }
-    val fontColor by remember { mutableStateOf(Color.Black) }
-    var fontSize = remember { mutableIntStateOf(24) }
+    var fontColor by remember { mutableStateOf(Color.Black) }
+    if (backgroundColor == Color.Black) {
+        fontColor = Color.White
+    } else {
+        fontColor = Color.Black
+    }
+    var fontSize = remember { mutableIntStateOf(17) }
     var fontStyle by remember { mutableStateOf(FontFamily.Default) }
     var textAlign by remember { mutableStateOf(TextAlign.Justify) }
 
@@ -137,7 +153,11 @@ fun ChapterScreenContent(navController: NavController, modifier: Modifier, conte
         {
             Text(
                 text = content.ten_chuong,
-                style = MaterialTheme.typography.titleMedium,
+                style = TextStyle(
+                    color = fontColor,
+                    fontFamily = fontStyle,
+                    fontWeight = FontWeight.SemiBold
+                ),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -199,6 +219,8 @@ fun BottomNavBar(
 ) {
     val curChapID = content.STT
     val chapNum = content.dsChuong.count()
+    val prevChapExist = curChapID > 1
+//    val nextChapExist =
 
     Box(modifier = modifier) {
         var showCustomText by remember { mutableStateOf(false) }
@@ -211,22 +233,23 @@ fun BottomNavBar(
             verticalAlignment = Alignment.CenterVertically)
         {
             val iconModifier = Modifier.size(40.dp)
-            Icon(
-                Icons.Rounded.ArrowBack,
-                contentDescription = null,
-                modifier = iconModifier
-                    .clickable {
-                        if (curChapID > 1) {
-                            val prevChap = curChapID - 1
-                            navController.navigate(Routes.Chapter.withArgs(prevChap.toString()))
-                        }
-                    }
-            )
+            IconButton(
+                enabled = curChapID > 1,
+                onClick = {
+                    val prevChap = curChapID - 1
+                    navController.navigate(Routes.Chapter.withArgs(content.id_truyen.toString(), prevChap.toString()))
+                }) {
+                Icon(
+                    Icons.Rounded.ArrowBack,
+                    contentDescription = null,
+                    modifier = iconModifier,
+                )
+            }
             Icon(
                 Icons.Rounded.Home,
                 contentDescription = null,
                 modifier = iconModifier
-                    .clickable {  }
+                    .clickable { navController.popBackStack(Routes.NovelDetail.withArgs(content.id_truyen.toString()), false) }
             )
             Icon(
                 Icons.Rounded.Settings,
@@ -246,17 +269,18 @@ fun BottomNavBar(
                 modifier = iconModifier
                     .clickable {  }
             )
-            Icon(
-                Icons.Rounded.ArrowForward,
-                contentDescription = null,
-                modifier = iconModifier
-                    .clickable {
-                        if (curChapID < chapNum) {
-                            val nextChap = curChapID + 1
-                            navController.navigate(Routes.Chapter.withArgs(nextChap.toString()))
-                        }
-                    }
-            )
+            IconButton(
+                enabled = curChapID < chapNum,
+                onClick = {
+                    val nextChap = curChapID + 1
+                    navController.navigate(Routes.Chapter.withArgs(content.id_truyen.toString(), nextChap.toString()))
+                }) {
+                Icon(
+                    Icons.Rounded.ArrowForward,
+                    contentDescription = null,
+                    modifier = iconModifier,
+                )
+            }
         }
 
         if (showCustomText) {
@@ -279,7 +303,8 @@ fun CustomReader(
     onTextAlignChange: (TextAlign) -> Unit,
     onVisibilityChange: () -> Unit,
 ){
-    val bgColorList = listOf(Color.Yellow, Color.Red, Color.Blue, Color.White)
+//    val viewModel = viewModel<ChapterViewModel>()
+    val bgColorList = listOf(colorResource(id = R.color.nau), colorResource(id = R.color.hong), Color.Black, Color.White)
     val fontList = listOf(FontFamily.Default, FontFamily.Serif, FontFamily.Cursive, FontFamily.Monospace)
     val textAlignList = listOf(
         Pair(R.drawable.format_align_left_24px, TextAlign.Left),
@@ -317,7 +342,10 @@ fun CustomReader(
             val colorBlockModifier = iconBoxModifier.shadow(10.dp)
             for (color in bgColorList) {
                 Canvas(
-                    modifier = colorBlockModifier.clickable { onBGColorChange(color) },
+                    modifier = colorBlockModifier.clickable {
+//                        viewModel.changeSetting(color)
+                        onBGColorChange(color)
+                                                            },
                     onDraw = { drawRect(color) }
                 )
             }

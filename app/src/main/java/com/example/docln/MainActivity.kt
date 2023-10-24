@@ -9,6 +9,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,6 +25,7 @@ import com.example.docln.screens.RankingScreen
 import com.example.docln.screens.RegisterScreen
 import com.example.docln.screens.SearchScreen
 import com.example.docln.ui.theme.DocLNTheme
+import com.example.docln.viewmodels.ChapterViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -46,6 +49,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Navigation() {
+//    val chapterScreenViewModel = viewModel<ChapterViewModel>()
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Routes.Home.route ) {
         composable(route = Routes.Home.route) {
@@ -65,8 +69,13 @@ fun Navigation() {
         }
 
         composable(
-            route = Routes.Chapter.route + "/{chapID}",
+            route = Routes.Chapter.route + "/{novelID}/{chapID}",
             arguments = listOf(
+                navArgument("novelID") {
+                    type = NavType.StringType
+                    defaultValue = "0"
+                    nullable = false
+                },
                 navArgument("chapID") {
                     type = NavType.StringType
                     defaultValue = "0"
@@ -74,7 +83,7 @@ fun Navigation() {
                 }
             )
         ) {
-            entry -> ChapterScreen(navController, chapterID = entry.arguments?.getString("chapID"))
+            entry -> ChapterScreen(navController, novelID = entry.arguments?.getString("novelID") , chapterID = entry.arguments?.getString("chapID"))
         }
 //        qa sửa note
         composable(

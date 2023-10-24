@@ -1,6 +1,7 @@
 package com.example.docln.screens
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -252,7 +253,7 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
 
         if (dsChuong.isNotEmpty()) {
             itemsIndexed(items = dsChuong, key = {index, chapter -> chapter.id_chuong}) {
-                    index, item -> ChapterList(navController, chapter = item)
+                    index, item -> ChapterList(navController, novel.id_truyen, chapter = item)
             }
         }
         else {
@@ -296,14 +297,14 @@ fun StarRating(modifier: Modifier = Modifier, color: Color = Color.Yellow, score
 }
 
 @Composable
-fun ChapterList(navController: NavController, chapter: Chapter) {
+fun ChapterList(navController: NavController, novelID: Int, chapter: Chapter) {
     Row (
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
             .clickable {
-                navController.navigate(Routes.Chapter.withArgs(chapter.id_chuong.toString()))
+                navController.navigate(Routes.Chapter.withArgs(novelID.toString(), chapter.id_chuong.toString()))
             }) {
         Text(
             modifier = Modifier
@@ -396,6 +397,8 @@ fun ExpandRating(reviews : List<ReviewContent>) {
 @Composable
 fun InputRating(onDismissRequest: () -> Unit) {
     val viewModel = viewModel<NovelViewModel>()
+    val contextForToast = LocalContext.current.applicationContext
+
     Dialog(onDismissRequest = { onDismissRequest() }) {
         var rating: Float by remember { mutableStateOf(0f) }
         var comment: String by remember{ mutableStateOf("") }
@@ -433,10 +436,13 @@ fun InputRating(onDismissRequest: () -> Unit) {
                     .weight(1f)
                     .fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     Button(onClick = {
-                        println(rating)
-                        println(comment)
-                        viewModel.sendReview(rating, comment)
-                        onDismissRequest() }) {
+                        if (rating > 0 && comment.isNotEmpty()) {
+                            viewModel.sendReview(rating, comment)
+                            Toast.makeText(contextForToast, "Đánh giá thành công!", Toast.LENGTH_SHORT).show()
+                            onDismissRequest()
+                        } else
+                            Toast.makeText(contextForToast, "Cần nhập nội dung để đánh giá!", Toast.LENGTH_SHORT).show()
+                    }) {
                         Text("Gửi")
                     }
                     Button(onClick = { onDismissRequest() }) {

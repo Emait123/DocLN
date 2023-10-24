@@ -38,6 +38,7 @@ data class NovelDetail (
 )
 
 data class ChapterContent(
+    val id_truyen: Int,
     val id_chuong: Int,
     val ten_chuong: String,
     val noidung: String,

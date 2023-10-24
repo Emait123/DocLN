@@ -1,5 +1,6 @@
 package com.example.docln.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +40,7 @@ import com.example.docln.viewmodels.LoginViewModel
 @Composable
 fun LoginScreen(navController: NavController,account_id :String?) {
     val viewModel = viewModel<LoginViewModel>()
+    val contextForToast = LocalContext.current.applicationContext
 
     Scaffold(
         topBar = {
@@ -102,7 +104,9 @@ fun LoginScreen(navController: NavController,account_id :String?) {
                         onClick = {
                             viewModel.checkUser(username, password)
                             val res = viewModel.isUserLogin
-                            if (res) { navController.popBackStack() } },
+                            if (res) {
+                                Toast.makeText(contextForToast, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
+                                navController.popBackStack() } },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)

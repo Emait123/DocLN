@@ -24,8 +24,10 @@ interface RetrofitAPI {
     @GET("gettruyen/{truyen_id}")
     suspend fun getNovelDetail(@Path(value="truyen_id", encoded = true) id:Int): NovelDetail
 
-    @GET("chapter/{chap_id}")
-    suspend fun getChapterContent(@Path(value="chap_id", encoded = true) id:Int): ChapterContent
+    @GET("chapter")
+    suspend fun getChapterContent(
+        @Query("truyen_id") truyenID : Int,
+        @Query("chap_id") chapID : Int): ChapterContent
 
     @GET("login")
     suspend fun loginUser(
