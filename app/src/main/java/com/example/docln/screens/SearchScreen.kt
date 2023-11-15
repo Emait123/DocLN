@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -125,7 +126,10 @@ fun SearchItem(navController: NavController, novel: Novel) {
     ) {
         AsyncImage(
             modifier = Modifier
-                .fillMaxHeight(),
+                .fillMaxHeight()
+                .size(width = 90.dp, height = 250.dp)
+                .weight(1f)
+                .padding(start = 20.dp, bottom = 20.dp),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(novel.coverImg)
                 .memoryCacheKey(novel.coverImg)
@@ -145,7 +149,9 @@ fun SearchItem(navController: NavController, novel: Novel) {
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier
+                .weight(1f)
+                .padding(10.dp),
         )
     }
 }
