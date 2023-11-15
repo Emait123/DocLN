@@ -1,15 +1,20 @@
 package com.example.docln
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.SystemFontFamily
+import androidx.compose.ui.text.style.TextAlign
 import com.google.gson.annotations.SerializedName
 
 
 
 
-data class DataModel (
-    val category: String,
-    val imageUrl: String,
-    val name: String,
-    val desc: String) {
+data class ReaderSetting (
+    val backgroundColor: Color,
+    val fontColor: Color,
+    val fontSize: Int,
+    val fontStyle: SystemFontFamily,
+    val textAlign: TextAlign
+) {
 }
 
 data class Novel (
@@ -33,6 +38,7 @@ data class NovelDetail (
     val minhhoa: String,
     val tag: String,
     val trangthai: String,
+    val follow: Boolean,
     val review: List<ReviewContent>,
     val dsChuong: List<Chapter>
 )

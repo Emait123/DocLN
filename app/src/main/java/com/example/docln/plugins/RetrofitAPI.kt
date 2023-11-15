@@ -22,7 +22,13 @@ interface RetrofitAPI {
     suspend fun getNovelList(): List<Novel>
 
     @GET("gettruyen/{truyen_id}")
-    suspend fun getNovelDetail(@Path(value="truyen_id", encoded = true) id:Int): NovelDetail
+    suspend fun getNovelDetail(
+        @Path(value="truyen_id", encoded = true) id: Int): NovelDetail
+
+    @GET("gettruyen/{truyen_id}/{userID}")
+    suspend fun getNovelDetail(
+        @Path(value="truyen_id", encoded = true) id: Int,
+        @Path(value="userID", encoded = true) userID: Int): NovelDetail
 
     @GET("chapter")
     suspend fun getChapterContent(
@@ -34,6 +40,16 @@ interface RetrofitAPI {
         @Query("UserId") userID : String ,
         @Query("Password") password : String): LoginResponse
 
+    @GET("register")
+    suspend fun registerUser(
+        @Query("UserId") userID : String ,
+        @Query("Password") password : String): LoginResponse
+
+    @GET("follow")
+    suspend fun followNovel(
+        @Query("novelID") novelID : Int,
+        @Query("userID") userID : Int): Boolean
+
     @GET("review")
     suspend fun sendReview(
         @Query("novelID") novelID : Int,
@@ -44,6 +60,8 @@ interface RetrofitAPI {
     @GET("search")
     suspend fun searchNovel( @Query("name") name: String ): List<Novel>
 
+    @GET("followList")
+    suspend fun getFollowList( @Query("userID") userID : Int): List<Novel>
 
     companion object {
         var retrofitAPI: RetrofitAPI? = null

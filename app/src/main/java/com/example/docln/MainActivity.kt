@@ -1,5 +1,6 @@
 package com.example.docln
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -19,6 +23,7 @@ import androidx.navigation.navArgument
 import com.example.docln.plugins.Graph
 import com.example.docln.screens.NovelDetailScreen
 import com.example.docln.screens.ChapterScreen
+import com.example.docln.screens.FollowScreen
 import com.example.docln.screens.HomeScreen
 import com.example.docln.screens.LoginScreen
 import com.example.docln.screens.RankingItem
@@ -31,9 +36,14 @@ import com.google.firebase.auth.FirebaseAuth
 
 
 class MainActivity : ComponentActivity() {
+    private val Context.dataStore by preferencesDataStore(
+        name = "readerSettings"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         Graph.provide(this)
         setContent {
             DocLNTheme {
@@ -102,6 +112,11 @@ fun Navigation() {
             route = Routes.Search.route,
         ) {
                 entry -> SearchScreen(navController)
+        }
+        composable(
+            route = Routes.Follow.route,
+        ) {
+                entry -> FollowScreen(navController)
         }
 //        thêm bảng xếp hạng mới
         composable(

@@ -20,6 +20,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +45,9 @@ fun LoginScreen(navController: NavController,account_id :String?) {
     val viewModel = viewModel<LoginViewModel>()
     val contextForToast = LocalContext.current.applicationContext
 
+    var res by remember { mutableStateOf(false) }
+    res = viewModel.isUserLogin
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -60,7 +64,9 @@ fun LoginScreen(navController: NavController,account_id :String?) {
             ) },
         content = { paddingValues ->
             Surface(
-                modifier = Modifier.fillMaxSize().padding(paddingValues),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
                 color = MaterialTheme.colorScheme.background
             ) {
                 Column(
@@ -103,13 +109,7 @@ fun LoginScreen(navController: NavController,account_id :String?) {
                     )
 
                     OutlinedButton(
-                        onClick = {
-                            var res by mutableStateOf(false)
-                            viewModel.checkUser(username, password)
-                            res = viewModel.isUserLogin
-                            if (res) {
-                                Toast.makeText(contextForToast, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
-                                navController.popBackStack() } },
+                        onClick = { viewModel.checkUser(username, password) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
@@ -130,4 +130,11 @@ fun LoginScreen(navController: NavController,account_id :String?) {
             }
         }
     )
+
+    LaunchedEffect(res) {
+        if (res) {
+            Toast.makeText(contextForToast, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
+            navController.popBackStack()
+        }
+    }
 }

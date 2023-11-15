@@ -19,7 +19,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Star
@@ -101,6 +104,7 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
     val dsChuong = novel.dsChuong.sortedBy { it.STT }
     var showDialog by remember{ mutableStateOf(false) }
     val context = LocalContext.current
+    val viewModel = viewModel<NovelViewModel>()
 
     LazyColumn (modifier = modifier
         .fillMaxSize()
@@ -204,14 +208,33 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
                     .padding(10.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround) {
-                Column (horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        Icons.Rounded.FavoriteBorder,
-                        contentDescription = "Yêu thích"
-                    )
-                    Text("1234")
+                Column (horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.clickable {
+                        if (viewModel.isUserLoggedIn) { viewModel.followNovel() }
+                        else { navController.navigate(Routes.Login.route) }
+                    }) {
+                    if (viewModel.isFollow) {
+                        Icon(
+                            Icons.Filled.Favorite,
+                            tint = Color.Red,
+                            contentDescription = "Yêu thích"
+                        )
+                    } else {
+                        Icon(
+                            Icons.Outlined.FavoriteBorder,
+                            tint = Color.Red,
+                            contentDescription = "Yêu thích"
+                        )
+                    }
+                    Text("Yêu thích")
                 }
-                Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clickable { showDialog = !showDialog }) {
+                Column (
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.clickable {
+                        if (viewModel.isUserLoggedIn) {
+                            showDialog = !showDialog
+                        } else { navController.navigate(Routes.Login.route) }
+                         }) {
                     Icon(
                         Icons.Rounded.Star,
                         contentDescription = "Đánh giá"
@@ -414,7 +437,7 @@ fun InputRating(onDismissRequest: () -> Unit) {
                     Text("Đánh giá: ")
                     StarRating(score = rating)
                     Text(
-                        text = " (%.2f)".format(rating),
+                        text = " (%.1f)".format(rating),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }

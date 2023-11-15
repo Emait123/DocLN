@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -107,6 +108,20 @@ fun HomeScreen(navController: NavController) {
                             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                         )
                     }
+                    if (loginState) {
+                        NavigationDrawerItem(
+                            icon = { Icon(imageVector = Routes.Follow.icon, contentDescription = Routes.Follow.name) },
+                            label = { Text(Routes.Follow.name) },
+                            selected = (Routes.Follow == selectedItem.value),
+                            onClick = {
+                                scope.launch { drawerState.close() }
+                                selectedItem.value = Routes.Follow
+                                navController.navigate(Routes.Follow.route)
+                            },
+                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(1.0f))
                     Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(10.dp))
                     if (!loginState) {
                         Text(text = "User")

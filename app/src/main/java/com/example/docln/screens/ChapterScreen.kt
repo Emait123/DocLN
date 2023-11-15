@@ -118,27 +118,16 @@ fun ChapterScreen(
 
 @Composable
 fun ChapterScreenContent(navController: NavController, modifier: Modifier, content : ChapterContent) {
-    val viewModel = viewModel<ChapterViewModel>()
 
+    val chapterViewModel = viewModel<ChapterViewModel>()
     var isVisible by remember { mutableStateOf(false) }
-    var backgroundColor by remember { mutableStateOf(Color.White) }
-    var fontColor by remember { mutableStateOf(Color.Black) }
-    if (backgroundColor == Color.Black) {
-        fontColor = Color.White
-    } else {
-        fontColor = Color.Black
-    }
-    var fontSize = remember { mutableIntStateOf(17) }
-    var fontStyle by remember { mutableStateOf(FontFamily.Default) }
-    var textAlign by remember { mutableStateOf(TextAlign.Justify) }
-
     val imgRegex = """`img`""".toRegex()
     val result: List<String> = content.noidung.split(imgRegex)
 
     val interactionSource = MutableInteractionSource()
     Box(modifier = modifier
         .fillMaxSize()
-        .background(color = backgroundColor),
+        .background(color = chapterViewModel.backgroundColor),
     )
     {
         Column (
@@ -154,9 +143,10 @@ fun ChapterScreenContent(navController: NavController, modifier: Modifier, conte
             Text(
                 text = content.ten_chuong,
                 style = TextStyle(
-                    color = fontColor,
-                    fontFamily = fontStyle,
-                    fontWeight = FontWeight.SemiBold
+                    color = chapterViewModel.fontColor,
+                    fontFamily = chapterViewModel.fontStyle,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 20.sp
                 ),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -176,11 +166,11 @@ fun ChapterScreenContent(navController: NavController, modifier: Modifier, conte
                     Text(
                         text = p,
                         style = TextStyle(
-                            fontSize = fontSize.intValue.sp,
-                            color = fontColor,
-                            fontFamily = fontStyle,
+                            fontSize = chapterViewModel.fontSize.sp,
+                            color = chapterViewModel.fontColor,
+                            fontFamily = chapterViewModel.fontStyle,
                         ),
-                        textAlign = textAlign,
+                        textAlign = chapterViewModel.textAlign,
                         modifier = Modifier.padding(start = 10.dp, end = 10.dp)
                     )
                 }
@@ -190,10 +180,6 @@ fun ChapterScreenContent(navController: NavController, modifier: Modifier, conte
             BottomNavBar(
                 navController = navController,
                 content = content,
-                backgroundChange = { backgroundColor = it },
-                fontSize = fontSize,
-                fontSyleChange = { fontStyle = it },
-                textAlignChange = { textAlign = it },
                 Modifier
                     .align(Alignment.BottomCenter)
                     .background(Color.White)
@@ -211,10 +197,6 @@ fun ChapterScreenContent(navController: NavController, modifier: Modifier, conte
 fun BottomNavBar(
     navController: NavController,
     content : ChapterContent,
-    backgroundChange : (Color) -> Unit,
-    fontSize: MutableState<Int>,
-    fontSyleChange : (SystemFontFamily) -> Unit,
-    textAlignChange: (TextAlign) -> Unit,
     modifier: Modifier
 ) {
     val curChapID = content.STT
@@ -257,18 +239,18 @@ fun BottomNavBar(
                 modifier = iconModifier
                     .clickable { showCustomText = !showCustomText }
             )
-            Icon(
-                Icons.Rounded.Info,
-                contentDescription = null,
-                modifier = iconModifier
-                    .clickable {  }
-            )
-            Icon(
-                Icons.Rounded.AddCircle,
-                contentDescription = null,
-                modifier = iconModifier
-                    .clickable {  }
-            )
+//            Icon(
+//                Icons.Rounded.Info,
+//                contentDescription = null,
+//                modifier = iconModifier
+//                    .clickable {  }
+//            )
+//            Icon(
+//                Icons.Rounded.AddCircle,
+//                contentDescription = null,
+//                modifier = iconModifier
+//                    .clickable {  }
+//            )
             IconButton(
                 enabled = curChapID < chapNum,
                 onClick = {
@@ -285,10 +267,6 @@ fun BottomNavBar(
 
         if (showCustomText) {
             CustomReader(
-                onBGColorChange = { backgroundChange(it) },
-                fontSize = fontSize,
-                onFontStyleChange = { fontSyleChange(it) },
-                onTextAlignChange = { textAlignChange(it) },
                 onVisibilityChange = { showCustomText = !showCustomText }
             )
         }
@@ -297,13 +275,9 @@ fun BottomNavBar(
 
 @Composable
 fun CustomReader(
-    onBGColorChange: (Color) -> Unit,
-    fontSize: MutableState<Int>,
-    onFontStyleChange: (SystemFontFamily) -> Unit,
-    onTextAlignChange: (TextAlign) -> Unit,
     onVisibilityChange: () -> Unit,
 ){
-//    val viewModel = viewModel<ChapterViewModel>()
+    val chapterViewModel = viewModel<ChapterViewModel>()
     val bgColorList = listOf(colorResource(id = R.color.nau), colorResource(id = R.color.hong), Color.Black, Color.White)
     val fontList = listOf(FontFamily.Default, FontFamily.Serif, FontFamily.Cursive, FontFamily.Monospace)
     val textAlignList = listOf(
@@ -342,10 +316,7 @@ fun CustomReader(
             val colorBlockModifier = iconBoxModifier.shadow(10.dp)
             for (color in bgColorList) {
                 Canvas(
-                    modifier = colorBlockModifier.clickable {
-//                        viewModel.changeSetting(color)
-                        onBGColorChange(color)
-                                                            },
+                    modifier = colorBlockModifier.clickable { chapterViewModel.changeBGColor(color) },
                     onDraw = { drawRect(color) }
                 )
             }
@@ -368,7 +339,7 @@ fun CustomReader(
                 for (font in fontList) {
                     DropdownMenuItem(
                         text = { Text(font.toString().removePrefix("FontFamily.")) },
-                        onClick = { onFontStyleChange(font) })
+                        onClick = { chapterViewModel.changeFontStyle(font) })
                 }
             }
         }
@@ -383,14 +354,14 @@ fun CustomReader(
                 Icons.Rounded.KeyboardArrowDown,
                 contentDescription = null,
                 modifier = iconBoxModifier
-                    .clickable { fontSize.value-- }
+                    .clickable { chapterViewModel.decFontSize() }
             )
-            Text(text = fontSize.value.toString())
+            Text(text = chapterViewModel.fontSize.toString())
             Icon(
                 Icons.Rounded.KeyboardArrowUp,
                 contentDescription = null,
                 modifier = iconBoxModifier
-                    .clickable { fontSize.value++ }
+                    .clickable { chapterViewModel.incFontSize() }
             )
         }
 
@@ -405,7 +376,7 @@ fun CustomReader(
                     painter = painterResource(id = item.first),
                     contentDescription = null,
                     modifier = iconBoxModifier
-                        .clickable { onTextAlignChange(item.second) }
+                        .clickable { chapterViewModel.changeTextAlign(item.second) }
                 )
             }
         }
