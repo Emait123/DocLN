@@ -21,10 +21,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,15 +34,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.docln.Routes
-import com.example.docln.viewmodels.LoginViewModel
 import com.example.docln.viewmodels.RegisterViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(navController: NavController) {
     val viewModel = viewModel<RegisterViewModel>()
-    var res by remember { mutableStateOf(false) }
-    res = viewModel.registrationSuccess
+    val contextForToast = LocalContext.current.applicationContext
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -61,7 +58,9 @@ fun RegisterScreen(navController: NavController) {
             ) },
         content = { paddingValues ->
             Surface(
-                modifier = Modifier.fillMaxSize().padding(paddingValues),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
                 color = MaterialTheme.colorScheme.background
             ) {
                 Column(
@@ -77,7 +76,7 @@ fun RegisterScreen(navController: NavController) {
                     TextField(
                         value = name,
                         onValueChange = { setname(it) },
-                        label = { Text("Username") },
+                        label = { Text("Tên hiển thị") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
@@ -90,7 +89,7 @@ fun RegisterScreen(navController: NavController) {
                     TextField(
                         value = username,
                         onValueChange = { setUsername(it) },
-                        label = { Text("name login") },
+                        label = { Text("Tên đăng nhập") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
@@ -104,7 +103,7 @@ fun RegisterScreen(navController: NavController) {
                     TextField(
                         value = password,
                         onValueChange = { setPassword(it) },
-                        label = { Text("Password") },
+                        label = { Text("Mật khẩu") },
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -117,13 +116,7 @@ fun RegisterScreen(navController: NavController) {
                     )
 
                     OutlinedButton(
-                        onClick = {
-                            if (name.isNotBlank() && username.isNotBlank() && password.length >= 6) {
-                                viewModel.registerUser(name, username, password)
-                            } else {
-                                viewModel.errorMessage = "Vui lòng nhập đầy đủ thông tin và mật khẩu phải có ít nhất 6 ký tự."
-                            }
-                        },
+                        onClick = { viewModel.registerUser(name, username, password) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
@@ -134,10 +127,15 @@ fun RegisterScreen(navController: NavController) {
             }
         }
     )
-    LaunchedEffect(res){
-        if (res) {
-            navController.navigate(Routes.Login.route)
+    LaunchedEffect(viewModel.response){
+        if (viewModel.response != "") {
+            Toast.makeText(contextForToast, viewModel.response, Toast.LENGTH_SHORT).show()
+            viewModel.response = ""
         }
     }
-
+    LaunchedEffect(viewModel.registrationSuccess) {
+        if (viewModel.registrationSuccess) {
+            navController.popBackStack(Routes.Home.route, false)
+        }
+    }
 }

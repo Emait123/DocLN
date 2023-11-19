@@ -131,6 +131,9 @@ fun LoginScreen(navController: NavController,account_id :String?) {
     }
 
     LaunchedEffect(viewModel.response) {
-        Toast.makeText(contextForToast, viewModel.response, Toast.LENGTH_SHORT).show()
+        if (viewModel.response != "") {
+            Toast.makeText(contextForToast, viewModel.response, Toast.LENGTH_SHORT).show()
+            viewModel.response = ""
+        }
     }
 }

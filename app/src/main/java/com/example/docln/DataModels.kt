@@ -68,14 +68,12 @@ data class LoginResponse(
     @field:SerializedName("UserId") var userId: Int,
     @field:SerializedName("Password") var Password: String
 ) {
-
     @SerializedName("id")
     var id: Int = 0
 
     @SerializedName("displayName")
     var displayName: String = ""
 
-    @SerializedName("ResponseMessage")
+    @SerializedName("message")
     var responseMessage: String? = null
-
 }

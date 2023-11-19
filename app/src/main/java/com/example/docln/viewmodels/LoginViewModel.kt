@@ -20,12 +20,9 @@ class LoginViewModel(
     var response: String by mutableStateOf("")
     var userName: String by mutableStateOf("")
     var userID: String by mutableStateOf("")
-//    private lateinit var auth: FirebaseAuth
-//    var auth = FirebaseAuth.getInstance()
 
     fun checkUser(loginName : String, password : String) {
         viewModelScope.launch {
-            response = "Kết nối với máy chủ"
             val apiService = RetrofitAPI.getInstance()
             try {
                 val res = apiService.loginUser(loginName, password)
