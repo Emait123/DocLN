@@ -94,7 +94,7 @@ fun HomeScreen(navController: NavController) {
             ModalDrawerSheet {
                 Column (modifier = Modifier.padding(12.dp)) {
                     Text("Xin chào $userName")
-                    Text(text = "Menu")
+                    Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(10.dp))
                     menuList.forEach { item ->
                         NavigationDrawerItem(
                             icon = { Icon(imageVector = item.icon, contentDescription = item.name) },
@@ -124,7 +124,6 @@ fun HomeScreen(navController: NavController) {
                     Spacer(modifier = Modifier.weight(1.0f))
                     Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(10.dp))
                     if (!loginState) {
-                        Text(text = "User")
                         userList.forEach { item ->
                             NavigationDrawerItem(
                                 icon = { Icon(imageVector = item.icon, contentDescription = item.name) },

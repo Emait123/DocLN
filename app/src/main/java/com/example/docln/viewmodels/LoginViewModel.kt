@@ -1,21 +1,14 @@
 package com.example.docln.viewmodels
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.docln.LoginResponse
 import com.example.docln.plugins.DBRepository
 import com.example.docln.plugins.Graph
 import com.example.docln.plugins.RetrofitAPI
 import com.example.docln.plugins.RoomAccount
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
 
@@ -24,7 +17,7 @@ class LoginViewModel(
 ) : ViewModel() {
     var isUserLogin : Boolean by mutableStateOf(false)
         private set
-    var errorMessage: String by mutableStateOf("")
+    var response: String by mutableStateOf("")
     var userName: String by mutableStateOf("")
     var userID: String by mutableStateOf("")
 //    private lateinit var auth: FirebaseAuth
@@ -32,17 +25,22 @@ class LoginViewModel(
 
     fun checkUser(loginName : String, password : String) {
         viewModelScope.launch {
+            response = "Kết nối với máy chủ"
             val apiService = RetrofitAPI.getInstance()
             try {
                 val res = apiService.loginUser(loginName, password)
                 if (res.responseMessage == "ok") {
                     val account = RoomAccount(accountID = res.id, displayName = res.displayName)
                     repository.logIn(account)
+                    response = "Đăng nhập thành công!"
                     isUserLogin = true
+                }
+                if (res.responseMessage == "fail") {
+                    response = "Thông tin đăng nhập sai"
                 }
             }
             catch (e: Exception) {
-                errorMessage = e.message.toString()
+                response = e.message.toString()
             }
         }
     }

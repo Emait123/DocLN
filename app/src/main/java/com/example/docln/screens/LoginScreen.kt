@@ -21,17 +21,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -44,9 +40,6 @@ import com.example.docln.viewmodels.LoginViewModel
 fun LoginScreen(navController: NavController,account_id :String?) {
     val viewModel = viewModel<LoginViewModel>()
     val contextForToast = LocalContext.current.applicationContext
-
-    var res by remember { mutableStateOf(false) }
-    res = viewModel.isUserLogin
 
     Scaffold(
         topBar = {
@@ -131,10 +124,13 @@ fun LoginScreen(navController: NavController,account_id :String?) {
         }
     )
 
-    LaunchedEffect(res) {
-        if (res) {
-            Toast.makeText(contextForToast, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
+    LaunchedEffect(viewModel.isUserLogin) {
+        if (viewModel.isUserLogin) {
             navController.popBackStack()
         }
+    }
+
+    LaunchedEffect(viewModel.response) {
+        Toast.makeText(contextForToast, viewModel.response, Toast.LENGTH_SHORT).show()
     }
 }
