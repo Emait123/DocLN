@@ -43,6 +43,8 @@ import com.example.docln.viewmodels.RegisterViewModel
 @Composable
 fun RegisterScreen(navController: NavController) {
     val viewModel = viewModel<RegisterViewModel>()
+    var res by remember { mutableStateOf(false) }
+    res = viewModel.registrationSuccess
     Scaffold(
         topBar = {
             TopAppBar(
@@ -116,7 +118,11 @@ fun RegisterScreen(navController: NavController) {
 
                     OutlinedButton(
                         onClick = {
-                            viewModel.registerUser(name, username, password)
+                            if (name.isNotBlank() && username.isNotBlank() && password.length >= 6) {
+                                viewModel.registerUser(name, username, password)
+                            } else {
+                                viewModel.errorMessage = "Vui lòng nhập đầy đủ thông tin và mật khẩu phải có ít nhất 6 ký tự."
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -128,8 +134,8 @@ fun RegisterScreen(navController: NavController) {
             }
         }
     )
-    LaunchedEffect(viewModel.registrationSuccess){
-        if (viewModel.registrationSuccess) {
+    LaunchedEffect(res){
+        if (res) {
             navController.navigate(Routes.Login.route)
         }
     }
