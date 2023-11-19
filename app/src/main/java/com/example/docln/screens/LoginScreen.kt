@@ -102,7 +102,7 @@ fun LoginScreen(navController: NavController,account_id :String?) {
                     )
 
                     OutlinedButton(
-                        onClick = { viewModel.checkUser(username, password) },
+                            onClick = { viewModel.checkUser(username, password) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)

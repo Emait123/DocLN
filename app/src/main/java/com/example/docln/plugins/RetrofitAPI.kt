@@ -42,8 +42,9 @@ interface RetrofitAPI {
 
     @GET("register")
     suspend fun registerUser(
-        @Query("UserId") userID : String ,
-        @Query("Password") password : String): LoginResponse
+        @Query("displayName") displayName: String,
+        @Query("loginName") loginName: String,
+        @Query("password") password: String): LoginResponse
 
     @GET("follow")
     suspend fun followNovel(
