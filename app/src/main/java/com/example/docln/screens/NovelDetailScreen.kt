@@ -245,7 +245,8 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
                     modifier = Modifier.clickable {
                         val sendIntent: Intent = Intent().apply {
                             action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, novel.ten_truyen)
+//                            putExtra(Intent.EXTRA_TEXT, novel.ten_truyen)
+                            putExtra(Intent.EXTRA_TEXT, "Tiêu đề truyện: ${novel.ten_truyen}\n\nNội dung truyện: ${novel.tomtat}")
                             type = "text/plain"
                         }
                         val shareIntent = Intent.createChooser(sendIntent, null)
@@ -263,6 +264,10 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
             Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
 
             Text(text = "Tên khác:")
+            Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
+
+            Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
+            Text(text = "Lượt xem: ${novel.id_truyen}", modifier = Modifier.wrapContentWidth(align = Alignment.CenterHorizontally))
             Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
 
             ExpandDesc(novel.tomtat)
