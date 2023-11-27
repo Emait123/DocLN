@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.docln.Routes
+import com.example.docln.plugins.AppDataStore
 import com.example.docln.viewmodels.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,6 +41,8 @@ import com.example.docln.viewmodels.LoginViewModel
 fun LoginScreen(navController: NavController,account_id :String?) {
     val viewModel = viewModel<LoginViewModel>()
     val contextForToast = LocalContext.current.applicationContext
+    viewModel.createDataStore(contextForToast)
+//    val dataStore = AppDataStore(contextForToast)
 
     Scaffold(
         topBar = {

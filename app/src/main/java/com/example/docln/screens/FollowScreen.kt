@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,8 @@ import com.example.docln.viewmodels.FollowViewModel
 @Composable
 fun FollowScreen(navController: NavController) {
     val followViewModel = viewModel<FollowViewModel>()
+    followViewModel.createDataStore(LocalContext.current)
+    followViewModel.checkLoginState()
     followViewModel.getFollowList()
     val data = followViewModel.novelListResponse
 

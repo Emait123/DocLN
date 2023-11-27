@@ -6,17 +6,6 @@ import androidx.compose.ui.text.style.TextAlign
 import com.google.gson.annotations.SerializedName
 
 
-
-
-data class ReaderSetting (
-    val backgroundColor: Color,
-    val fontColor: Color,
-    val fontSize: Int,
-    val fontStyle: SystemFontFamily,
-    val textAlign: TextAlign
-) {
-}
-
 data class Novel (
     val id_truyen: Int,
     val ten_truyen: String,
@@ -30,10 +19,10 @@ data class Chapter(
 )
 
 data class NovelDetail (
-    val id_truyen: Int = 0,
-    var ten_truyen: String = "de",
-    val coverImg: String = "",
+    val id_truyen: Int,
+    var ten_truyen: String,
     val tomtat: String,
+    val coverImg: String,
     val tacgia: String,
     val minhhoa: String,
     val tag: String,
@@ -41,7 +30,8 @@ data class NovelDetail (
     val follow: Boolean,
     val review: List<ReviewContent>,
     val dsChuong: List<Chapter>,
-    val view: Int
+    val view: Int,
+    val tenkhac: String
 )
 
 data class ChapterContent(

@@ -2,16 +2,12 @@ package com.example.docln.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,12 +16,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -58,7 +50,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -67,8 +58,8 @@ import coil.request.ImageRequest
 import com.example.docln.Novel
 import com.example.docln.R
 import com.example.docln.Routes
-import com.example.docln.viewmodels.LoginViewModel
-import com.example.docln.viewmodels.MainViewModel
+import com.example.docln.plugins.AppDataStore
+import com.example.docln.viewmodels.HomeViewModel
 import kotlinx.coroutines.launch
 
 
@@ -78,7 +69,9 @@ fun HomeScreen(navController: NavController) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    val viewModel = viewModel<MainViewModel>()
+//    val dataStore = AppDataStore(LocalContext.current)
+    val viewModel = viewModel<HomeViewModel>()
+    viewModel.createDataStore(LocalContext.current)
     viewModel.checkLoginState()
     val loginState = viewModel.isUserLoggedIn
     val userName = viewModel.userName
@@ -183,8 +176,8 @@ fun HomeScreen(navController: NavController) {
 
 @Composable
 fun HomeScreenContent (navController: NavController, modifier: Modifier) {
-    val viewModel = viewModel<MainViewModel>()
-    viewModel.getNovelList()
+    val viewModel = viewModel<HomeViewModel>()
+//    viewModel.getNovelList()
     val novelList = viewModel.novelListResponse
     Column (modifier = Modifier.verticalScroll(rememberScrollState())) {
         Row(modifier = modifier.padding(5.dp)) {
@@ -217,7 +210,7 @@ fun HomeScreenContent (navController: NavController, modifier: Modifier) {
             CircularProgressIndicator()
         }
         LazyRow () {
-            itemsIndexed(items = novelList, key = {index, novel -> novel.id_truyen}) {
+            itemsIndexed(items = novelList.shuffled(), key = {index, novel -> novel.id_truyen}) {
                     index, item -> NovelItem(navController, novel = item)
             }
         }
@@ -234,7 +227,7 @@ fun HomeScreenContent (navController: NavController, modifier: Modifier) {
             CircularProgressIndicator()
         }
         LazyRow () {
-            itemsIndexed(items = novelList, key = {index, novel -> novel.id_truyen}) {
+            itemsIndexed(items = novelList.shuffled(), key = {index, novel -> novel.id_truyen}) {
                     index, item -> NovelItem(navController, novel = item)
             }
         }

@@ -22,8 +22,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.Warning
@@ -67,11 +65,17 @@ import com.example.docln.ReviewContent
 import com.example.docln.Routes
 import com.example.docln.ui.theme.DocLNTheme
 import com.example.docln.viewmodels.NovelViewModel
+import androidx.activity.viewModels
+import androidx.lifecycle.SavedStateHandle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NovelDetailScreen(navController: NavController, novelID: String?) {
-    val viewModel = viewModel<NovelViewModel>()
+fun NovelDetailScreen(
+    navController: NavController,
+    novelID: String?){
+//    val viewModel = viewModel<NovelViewModel>()
+    val viewModel: NovelViewModel = viewModel()
+//    val viewModel = NovelViewModel(state = SavedStateHandle())
     if (novelID != null) {
         viewModel.getNovelDetail(novelID.toInt())
     }
@@ -105,6 +109,8 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
     var showDialog by remember{ mutableStateOf(false) }
     val context = LocalContext.current
     val viewModel = viewModel<NovelViewModel>()
+    viewModel.createDataStore(context)
+    viewModel.checkLoginState()
 
     LazyColumn (modifier = modifier
         .fillMaxSize()
@@ -134,11 +140,26 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
             )
             Row (modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp)) {
                 Text(
+                    text = "Tên khác: ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .wrapContentWidth(align = Alignment.Start)
+                )
+                Text(
+                    text = novel.tenkhac,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                )
+            }
+            Row (modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp)) {
+                Text(
                     text = "Tác giả: ",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-//                        .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
                         .wrapContentWidth(align = Alignment.Start)
                 )
                 Text(
@@ -147,7 +168,6 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier
                         .padding(start = 10.dp)
-//                        .wrapContentWidth(align = Alignment.Start)
                 )
             }
             Row (modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp)) {
@@ -157,7 +177,6 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .wrapContentWidth(align = Alignment.Start)
-//                        .padding(start = 10.dp, bottom = 10.dp),
                 )
                 Text(
                     text = novel.minhhoa,
@@ -174,7 +193,6 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .wrapContentWidth(align = Alignment.Start)
-//                        .padding(start = 10.dp, bottom = 10.dp),
                 )
                 Text(
                     text = novel.tag,
@@ -279,15 +297,8 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
                     Text("Chia sẻ")
                 }
             }
-            Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
-            Text(text = "Cập nhật lần cuối: 18 giờ", modifier = Modifier.wrapContentWidth(align = Alignment.CenterHorizontally))
-            Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
-
-            Text(text = "Tên khác:")
-            Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
-
-            Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
-            Text(text = "Lượt xem: ${novel.id_truyen}", modifier = Modifier.wrapContentWidth(align = Alignment.CenterHorizontally))
+//            Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
+//            Text(text = "Cập nhật lần cuối: 18 giờ", modifier = Modifier.wrapContentWidth(align = Alignment.CenterHorizontally))
             Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
 
             ExpandDesc(novel.tomtat)
@@ -352,7 +363,12 @@ fun ChapterList(navController: NavController, novelID: Int, chapter: Chapter) {
             .fillMaxWidth()
             .padding(10.dp)
             .clickable {
-                navController.navigate(Routes.Chapter.withArgs(novelID.toString(), chapter.id_chuong.toString()))
+                navController.navigate(
+                    Routes.Chapter.withArgs(
+                        novelID.toString(),
+                        chapter.id_chuong.toString()
+                    )
+                )
             }) {
         Text(
             modifier = Modifier
@@ -421,8 +437,7 @@ fun ExpandRating(reviews : List<ReviewContent>) {
             Row {
                 Icon(Icons.Rounded.Star, contentDescription = null)
                 Text("Đánh giá: ")
-                StarRating(Modifier.padding(horizontal = 10.dp), score = 3.4f)
-                Text("(3.4)")
+                StarRating(Modifier.padding(horizontal = 10.dp), score = 5.0f)
             }
             if (expanded) {
                 reviews.forEach { e ->

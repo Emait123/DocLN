@@ -13,13 +13,21 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-
-@Entity(tableName = "topTruyen")
+//Entity: Khai báo cấu trúc mảng
+@Entity(tableName = "truyen")
 data class RoomNovel(
-    @PrimaryKey(autoGenerate = true) val idTruyen: Int,
-    @ColumnInfo(name = "ten_truyen") val tenTruyen: String,
-    @ColumnInfo(name = "coverImg") val coverImg: String,
+    @ColumnInfo(name = "id_truyen") @PrimaryKey(autoGenerate = true) val id_truyen: Int,
+    @ColumnInfo(name = "ten_truyen") val ten_truyen: String,
+    val tomtat: String,
+    val coverImg: String,
+    val tacgia: String,
+    val minhhoa: String,
+    val tag: String,
+    val trangthai: String,
+    val view: Int,
+    val tenkhac: String
 )
 @Entity(tableName = "account")
 data class RoomAccount(
@@ -31,16 +39,24 @@ data class RoomAccount(
     constructor(accountID: Int, displayName: String) : this (null, accountID, displayName)
 }
 
+
+//Các Interface chứa các function sẽ thực hiện với bảng đó
 @Dao
 interface NovelDao {
-    @Query("SELECT * FROM topTruyen")
+    @Query("SELECT * FROM truyen")
     fun getAll(): Flow<List<RoomNovel>>
 
-    @Query("DELETE FROM topTruyen")
+    @Query("SELECT * FROM truyen WHERE id_truyen = :id")
+    fun getNovel(id: Int): Flow<RoomNovel>
+
+    @Query("DELETE FROM truyen")
     suspend fun deleteAllNovel()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNovel(novel: RoomNovel)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateNovel(novel: RoomNovel)
 }
 
 @Dao
@@ -55,7 +71,7 @@ interface AccountDao {
     suspend fun insertAccount(account: RoomAccount)
 }
 
-@Database(entities = [RoomNovel::class, RoomAccount::class], version = 2, exportSchema = false)
+@Database(entities = [RoomNovel::class, RoomAccount::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun novelDao(): NovelDao
     abstract fun accountDao(): AccountDao
@@ -83,7 +99,7 @@ class DBRepository (
     private val accountDao: AccountDao
 ) {
     val account = accountDao.getAccount()
-
+    val novels = novelDao.getAll()
     suspend fun logOut(account: RoomAccount){
         accountDao.deleteAccount(account)
     }
@@ -92,15 +108,15 @@ class DBRepository (
         accountDao.insertAccount(account)
     }
 
+    suspend fun insertOrUpdateNovel(novel: RoomNovel) {
+        novelDao.insertNovel(novel)
+    }
+
+    suspend fun getNovel(id: Int) {
+        novelDao.getNovel(id)
+    }
 //    init {
 //        val database = AppDatabase.getDatabase(application)
 //        novelDao = database.novelDao()
-//    }
-
-//    val getAllNovel : Flow<List<RoomNovel>> = novelDao.getAll()
-//
-//    suspend fun replaceTopNovel(novel : Novel) {
-//        novelDao.deleteAllNovel()
-//        novelDao.insertNovel(novel.id_truyen, novel.ten_truyen, novel.coverImg)
 //    }
 }

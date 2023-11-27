@@ -18,15 +18,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
-import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -34,15 +31,12 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,13 +45,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.SystemFontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,7 +67,6 @@ import com.example.docln.ui.theme.DocLNTheme
 import com.example.docln.viewmodels.ChapterViewModel
 
 //Màn hình hiển thị nội dung chương truyện
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChapterScreen(
@@ -82,8 +74,9 @@ fun ChapterScreen(
     navController : NavController,
     novelID: String?, chapterID: String?) {
     val viewModel = viewModel<ChapterViewModel>()
+    println("novel: $novelID, chapter: $chapterID")
     if (chapterID != null && novelID != null) {
-        viewModel.ChapContent(novelID.toInt(), chapterID.toInt())
+        viewModel.chapContent(novelID.toInt(), chapterID.toInt())
     }
     val res = viewModel.chapContentResponse
     if (res.isEmpty()){
@@ -126,10 +119,20 @@ fun ChapterScreenContent(navController: NavController, modifier: Modifier, conte
     val imgRegex = """`img`""".toRegex()
     val result: List<String> = content.noidung.split(imgRegex)
 
+    chapterViewModel.createDataStore(LocalContext.current)
+    val fontColorList = listOf(Color.Black, Color.White)
+    val bgColorList = listOf(colorResource(id = R.color.nau), colorResource(id = R.color.hong), Color.Black, Color.White)
+    val fontList = listOf(FontFamily.Default, FontFamily.Serif, FontFamily.Cursive, FontFamily.Monospace)
+    val textAlignList = listOf(
+        Pair(R.drawable.format_align_left_24px, TextAlign.Left),
+        Pair(R.drawable.format_align_center_24px, TextAlign.Center),
+        Pair(R.drawable.format_align_right_24px, TextAlign.Right),
+        Pair(R.drawable.format_align_justify_24px, TextAlign.Justify))
+
     val interactionSource = MutableInteractionSource()
     Box(modifier = modifier
         .fillMaxSize()
-        .background(color = chapterViewModel.backgroundColor),
+        .background(color = bgColorList[chapterViewModel.backgroundColor]),
     )
     {
         Column (
@@ -145,8 +148,8 @@ fun ChapterScreenContent(navController: NavController, modifier: Modifier, conte
             Text(
                 text = content.ten_chuong,
                 style = TextStyle(
-                    color = chapterViewModel.fontColor,
-                    fontFamily = chapterViewModel.fontStyle,
+                    color = fontColorList[chapterViewModel.fontColor],
+                    fontFamily = fontList[chapterViewModel.fontStyle],
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 20.sp
                 ),
@@ -169,10 +172,10 @@ fun ChapterScreenContent(navController: NavController, modifier: Modifier, conte
                         text = p,
                         style = TextStyle(
                             fontSize = chapterViewModel.fontSize.sp,
-                            color = chapterViewModel.fontColor,
-                            fontFamily = chapterViewModel.fontStyle,
+                            color = fontColorList[chapterViewModel.fontColor],
+                            fontFamily = fontList[chapterViewModel.fontStyle],
                         ),
-                        textAlign = chapterViewModel.textAlign,
+                        textAlign = textAlignList[chapterViewModel.textAlign].second,
                         modifier = Modifier.padding(start = 10.dp, end = 10.dp)
                     )
                 }
@@ -201,12 +204,13 @@ fun BottomNavBar(
     content : ChapterContent,
     modifier: Modifier
 ) {
-    val curChapID = content.STT
+    val curChapID = content.id_chuong
+    val curChapSTT = content.STT
     val chapNum = content.dsChuong.count()
-    val prevChapExist = curChapID > 1
+
+    val chapterViewModel = viewModel<ChapterViewModel>()
     var mediaPlayer: MediaPlayer? by remember { mutableStateOf(null) }
 
-//    val nextChapExist =
 
     Box(modifier = modifier) {
         var showCustomText by remember { mutableStateOf(false) }
@@ -220,10 +224,10 @@ fun BottomNavBar(
         {
             val iconModifier = Modifier.size(40.dp)
             IconButton(
-                enabled = curChapID > 1,
+                enabled = curChapSTT > 1,
                 onClick = {
-                    val prevChap = curChapID - 1
-                    navController.navigate(Routes.Chapter.withArgs(content.id_truyen.toString(), prevChap.toString()))
+                    val prevChapID = content.dsChuong[curChapSTT-2].id_chuong
+                    navController.navigate(Routes.Chapter.withArgs(content.id_truyen.toString(), prevChapID.toString()))
                 }) {
                 Icon(
                     Icons.Rounded.ArrowBack,
@@ -255,25 +259,25 @@ fun BottomNavBar(
 //                modifier = iconModifier
 //                    .clickable {  }
 //            )
-            IconButton(
-                onClick = {
-                    mediaPlayer?.release()
-                    mediaPlayer = MediaPlayer.create(context, R.raw.'cái này là file')
-                    mediaPlayer?.start()
-                },
-                modifier = iconModifier
-            ) {
-                Icon(
-                    Icons.Rounded.PlayArrow,
-                    contentDescription = null
-                )
-            }
+//            IconButton(
+//                onClick = {
+//                    mediaPlayer?.release()
+//                    mediaPlayer = MediaPlayer.create(context, R.raw.'cái này là file')
+//                    mediaPlayer?.start()
+//                },
+//                modifier = iconModifier
+//            ) {
+//                Icon(
+//                    Icons.Rounded.PlayArrow,
+//                    contentDescription = null
+//                )
+//            }
 
             IconButton(
-                enabled = curChapID < chapNum,
+                enabled = curChapSTT < chapNum,
                 onClick = {
-                    val nextChap = curChapID + 1
-                    navController.navigate(Routes.Chapter.withArgs(content.id_truyen.toString(), nextChap.toString()))
+                    val nextChapID = content.dsChuong[curChapSTT].id_chuong
+                    navController.navigate(Routes.Chapter.withArgs(content.id_truyen.toString(), nextChapID.toString()))
                 }) {
                 Icon(
                     Icons.Rounded.ArrowForward,
@@ -285,7 +289,8 @@ fun BottomNavBar(
 
         if (showCustomText) {
             CustomReader(
-                onVisibilityChange = { showCustomText = !showCustomText }
+                onVisibilityChange = { chapterViewModel.saveReaderSettings()
+                    showCustomText = !showCustomText }
             )
         }
     }
@@ -332,9 +337,9 @@ fun CustomReader(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             val colorBlockModifier = iconBoxModifier.shadow(10.dp)
-            for (color in bgColorList) {
+            bgColorList.forEachIndexed { index, color ->
                 Canvas(
-                    modifier = colorBlockModifier.clickable { chapterViewModel.changeBGColor(color) },
+                    modifier = colorBlockModifier.clickable { chapterViewModel.changeBGColor(color, index) },
                     onDraw = { drawRect(color) }
                 )
             }
@@ -354,10 +359,10 @@ fun CustomReader(
                 onDismissRequest = { showFontList = false }
             )
             {
-                for (font in fontList) {
+                fontList.forEachIndexed { index, font ->
                     DropdownMenuItem(
                         text = { Text(font.toString().removePrefix("FontFamily.")) },
-                        onClick = { chapterViewModel.changeFontStyle(font) })
+                        onClick = { chapterViewModel.changeFontStyle(font, index) })
                 }
             }
         }
@@ -389,12 +394,12 @@ fun CustomReader(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            for (item in textAlignList) {
+            textAlignList.forEachIndexed { index, item ->
                 Icon(
                     painter = painterResource(id = item.first),
                     contentDescription = null,
                     modifier = iconBoxModifier
-                        .clickable { chapterViewModel.changeTextAlign(item.second) }
+                        .clickable { chapterViewModel.changeTextAlign(item.second, index) }
                 )
             }
         }

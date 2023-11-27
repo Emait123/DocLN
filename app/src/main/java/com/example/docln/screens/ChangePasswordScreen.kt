@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.docln.Routes
 import com.example.docln.viewmodels.ChangePasswordViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,7 +91,7 @@ fun ChangePasswordScreen(navController: NavController) {
                     TextField(
                         value = password,
                         onValueChange = { setpassword(it) },
-                        label = { Text("Nhập lại mạt khẩu") },
+                        label = { Text("Mật khẩu cũ") },
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -132,11 +133,14 @@ fun ChangePasswordScreen(navController: NavController) {
         }
     )
 
-//    LaunchedEffect(viewModel.response) {
-//        if (viewModel.response != "") {
-//            Toast.makeText(contextForToast, viewModel.response, Toast.LENGTH_SHORT).show()
-//            viewModel.response = ""
-//        }
-//    }
+    LaunchedEffect(viewModel.response) {
+        if (viewModel.response != "") {
+            Toast.makeText(contextForToast, viewModel.response, Toast.LENGTH_SHORT).show()
+            viewModel.response = ""
+            if (viewModel.changePasswordSuccess) {
+                navController.popBackStack(Routes.Login.route, false)
+            }
+        }
+    }
 }
 

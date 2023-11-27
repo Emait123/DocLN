@@ -10,12 +10,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.docln.plugins.AppDataStore
 import com.example.docln.plugins.Graph
 import com.example.docln.screens.ChangePasswordScreen
 import com.example.docln.screens.NovelDetailScreen
@@ -27,17 +30,16 @@ import com.example.docln.screens.RankingScreen
 import com.example.docln.screens.RegisterScreen
 import com.example.docln.screens.SearchScreen
 import com.example.docln.ui.theme.DocLNTheme
+import com.example.docln.viewmodels.NovelViewModel
 
+//private val Context.dataStore by preferencesDataStore(
+//    name = "appSettings",
+//    produceMigrations = { context -> listOf(SharedPreferencesMigration(context, "appSettings")) }
+//)
 
 class MainActivity : ComponentActivity() {
-    private val Context.dataStore by preferencesDataStore(
-        name = "readerSettings"
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         Graph.provide(this)
         setContent {
             DocLNTheme {

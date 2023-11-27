@@ -31,7 +31,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavController
 import com.example.docln.Routes
 import com.example.docln.viewmodels.RegisterViewModel
@@ -135,7 +137,7 @@ fun RegisterScreen(navController: NavController) {
     }
     LaunchedEffect(viewModel.registrationSuccess) {
         if (viewModel.registrationSuccess) {
-            navController.popBackStack(Routes.Home.route, false)
+            navController.popBackStack(Routes.Login.route, false)
         }
     }
 }

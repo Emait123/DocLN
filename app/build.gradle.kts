@@ -98,4 +98,8 @@ dependencies {
 
     //DataStore để lưu reader setting
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // Saved state module for ViewModel
+    val lifecycle_version = "2.6.2"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
 }

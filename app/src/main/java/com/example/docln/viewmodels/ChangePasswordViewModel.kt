@@ -19,10 +19,6 @@ class ChangePasswordViewModel(
 
     fun changePassword(loginName: String, oldPassword: String, newPassword: String) {
         viewModelScope.launch {
-//            println(loginName)
-//            println(oldPassword)
-            println(newPassword)
-
             val apiService = RetrofitAPI.getInstance()
             try {
                 val res = apiService.changePassword(loginName, oldPassword, newPassword)
@@ -30,7 +26,8 @@ class ChangePasswordViewModel(
                     changePasswordSuccess = true
                     response = "Đổi mật khẩu thành công"
                 } else {
-                    response = "thất bại"
+                    changePasswordSuccess = false
+                    response = "Đổi mật khẩu thất bại"
                 }
             } catch (e: Exception) {
                 response = e.message.toString()
