@@ -287,7 +287,7 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
             Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
 
             Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
-            Text(text = "Lượt xem: ${novel.id_truyen}", modifier = Modifier.wrapContentWidth(align = Alignment.CenterHorizontally))
+            Text(text = "Lượt xem: ${novel.view}", modifier = Modifier.wrapContentWidth(align = Alignment.CenterHorizontally))
             Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(10.dp))
 
             ExpandDesc(novel.tomtat)

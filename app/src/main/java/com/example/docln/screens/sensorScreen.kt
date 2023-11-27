@@ -1,6 +1,5 @@
 package com.example.docln.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,31 +19,23 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.docln.Routes
-import com.example.docln.viewmodels.LoginViewModel
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController,account_id :String?) {
-    val viewModel = viewModel<LoginViewModel>()
-    val contextForToast = LocalContext.current.applicationContext
-
+fun sensorScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Đăng nhập") },
+                title = { Text("sensor") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Cyan),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -54,7 +45,8 @@ fun LoginScreen(navController: NavController,account_id :String?) {
                         )
                     }
                 },
-            ) },
+            )
+        },
         content = { paddingValues ->
             Surface(
                 modifier = Modifier
@@ -68,95 +60,63 @@ fun LoginScreen(navController: NavController,account_id :String?) {
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val context = LocalContext.current
-                    val (username, setUsername) = remember { mutableStateOf("") }
-                    val (password, setPassword) = remember { mutableStateOf("") }
+                    val (name, setName) = remember { mutableStateOf("") }
+                    val (date, setdate) = remember { mutableStateOf("") }
+                    val (temp, setTemp) = remember { mutableStateOf("") }
 
                     TextField(
-                        value = username,
-                        onValueChange = { setUsername(it) },
-                        label = { Text("Username") },
+                        value = name,
+                        onValueChange = { setName(it) },
+                        label = { Text("họ tên") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 18.sp),
+                        textStyle = TextStyle(fontSize = 18.sp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = Color.Gray
+                        )
+                    )
+                    TextField(
+                        value = date,
+                        onValueChange = { setdate(it) },
+                        label = { Text("ngày tháng năm và thời gian") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        textStyle = TextStyle(fontSize = 18.sp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = Color.Gray
+                        )
+                    )
+                    TextField(
+                        value = temp,
+                        onValueChange = { setTemp(it) },
+                        label = { Text("nhiệt độ") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        textStyle = TextStyle(fontSize = 18.sp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
                             unfocusedBorderColor = Color.Gray
                         )
                     )
 
-                    TextField(
-                        value = password,
-                        onValueChange = { setPassword(it) },
-                        label = { Text("Password") },
-                        visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 18.sp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = Color.Gray
-                        )
-                    )
+
                     OutlinedButton(
                         onClick = {
-                            // Chuyển hướng đến màn hình đổi mật khẩu
-                            navController.navigate(Routes.ChangePassword.route)
+//                            viewModel.changePassword(username, password,newpassword)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
                     ) {
-                        Text("Đổi Mật Khẩu")
-                    }
-                    OutlinedButton(
-                        onClick = {
-                            // Chuyển hướng đến màn hình đổi mật khẩu
-                            navController.navigate(Routes.sensor.route)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        Text("sensor")
-                    }
-                    OutlinedButton(
-                            onClick = { viewModel.checkUser(username, password) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        Text("Đăng Nhập")
-                    }
-                    OutlinedButton(
-                        onClick = {
-                            navController.navigate(Routes.Register.route)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        Text("Đăng Ký")
+                        Text("Xác Nhận")
                     }
                 }
             }
         }
     )
-
-    LaunchedEffect(viewModel.isUserLogin) {
-        if (viewModel.isUserLogin) {
-            navController.popBackStack()
-        }
-    }
-
-    LaunchedEffect(viewModel.response) {
-        if (viewModel.response != "") {
-            Toast.makeText(contextForToast, viewModel.response, Toast.LENGTH_SHORT).show()
-            viewModel.response = ""
-        }
-    }
 }
-//tai khoan:quanh
-//matkhau:123456

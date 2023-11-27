@@ -66,8 +66,9 @@ interface RetrofitAPI {
     @GET("change-password")
     suspend fun changePassword(
         @Query("loginName") loginName: String,
-        @Query("newPassword") newPassword: String,
-        @Query("oldPassword") oldPassword: String): LoginResponse
+        @Query("oldPassword") oldPassword: String,
+        @Query("newPassword") newPassword: String
+        ): LoginResponse
 
 
     companion object {
