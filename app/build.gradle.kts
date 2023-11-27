@@ -98,4 +98,5 @@ dependencies {
 
     //DataStore để lưu reader setting
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
 }

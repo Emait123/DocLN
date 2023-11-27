@@ -249,25 +249,14 @@ fun BottomNavBar(
 //                modifier = iconModifier
 //                    .clickable {  }
 //            )
-//            Icon(
-//                Icons.Rounded.AddCircle,
-//                contentDescription = null,
-//                modifier = iconModifier
-//                    .clickable {  }
-//            )
-            IconButton(
-                onClick = {
-                    mediaPlayer?.release()
-                    mediaPlayer = MediaPlayer.create(context, R.raw.'cái này là file')
-                    mediaPlayer?.start()
-                },
+            Icon(
+                Icons.Rounded.PlayArrow,
+                contentDescription = null,
                 modifier = iconModifier
-            ) {
-                Icon(
-                    Icons.Rounded.PlayArrow,
-                    contentDescription = null
-                )
-            }
+                    .clickable {
+                        
+                    }
+            )
 
             IconButton(
                 enabled = curChapID < chapNum,

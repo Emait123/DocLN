@@ -21,7 +21,7 @@ class ChangePasswordViewModel(
         viewModelScope.launch {
 //            println(loginName)
 //            println(oldPassword)
-            println(newPassword)
+//            println(newPassword)
 
             val apiService = RetrofitAPI.getInstance()
             try {

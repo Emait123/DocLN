@@ -26,6 +26,7 @@ import com.example.docln.screens.LoginScreen
 import com.example.docln.screens.RankingScreen
 import com.example.docln.screens.RegisterScreen
 import com.example.docln.screens.SearchScreen
+import com.example.docln.screens.sensorScreen
 import com.example.docln.ui.theme.DocLNTheme
 
 
@@ -112,6 +113,12 @@ fun Navigation() {
         ) {
                 entry->
             ChangePasswordScreen(navController)
+        }
+        composable(
+            route = Routes.sensor.route,
+        ) {
+                entry->
+            sensorScreen(navController)
         }
         composable(
             route = Routes.Follow.route,
