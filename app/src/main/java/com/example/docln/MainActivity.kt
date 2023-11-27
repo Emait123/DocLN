@@ -13,8 +13,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,8 +29,6 @@ import com.example.docln.screens.RankingScreen
 import com.example.docln.screens.RegisterScreen
 import com.example.docln.screens.SearchScreen
 import com.example.docln.ui.theme.DocLNTheme
-import com.example.docln.viewmodels.ChapterViewModel
-import com.google.firebase.auth.FirebaseAuth
 
 
 class MainActivity : ComponentActivity() {

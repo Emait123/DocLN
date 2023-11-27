@@ -203,6 +203,26 @@ fun NovelDetailContent(navController: NavController, modifier: Modifier, novel :
                         .padding(5.dp)
                 )
             }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Lượt xem: ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .wrapContentHeight(Alignment.CenterVertically)
+                        .padding(10.dp)
+                )
+                Text(
+                    text = novel.view.toString(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                )
+            }
             Row (
                 modifier = Modifier
                     .padding(10.dp)

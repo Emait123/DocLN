@@ -40,7 +40,8 @@ data class NovelDetail (
     val trangthai: String,
     val follow: Boolean,
     val review: List<ReviewContent>,
-    val dsChuong: List<Chapter>
+    val dsChuong: List<Chapter>,
+    val view: Int
 )
 
 data class ChapterContent(
