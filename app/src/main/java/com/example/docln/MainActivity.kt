@@ -10,8 +10,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -19,12 +17,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.docln.plugins.Graph
+import com.example.docln.screens.ChangePasswordScreen
 import com.example.docln.screens.NovelDetailScreen
 import com.example.docln.screens.ChapterScreen
 import com.example.docln.screens.FollowScreen
 import com.example.docln.screens.HomeScreen
 import com.example.docln.screens.LoginScreen
-import com.example.docln.screens.RankingItem
 import com.example.docln.screens.RankingScreen
 import com.example.docln.screens.RegisterScreen
 import com.example.docln.screens.SearchScreen
@@ -108,6 +106,12 @@ fun Navigation() {
             route = Routes.Search.route,
         ) {
                 entry -> SearchScreen(navController)
+        }
+        composable(
+            route = Routes.ChangePassword.route,
+        ) {
+                entry->
+            ChangePasswordScreen(navController)
         }
         composable(
             route = Routes.Follow.route,

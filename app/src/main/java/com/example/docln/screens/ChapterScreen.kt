@@ -1,5 +1,6 @@
 package com.example.docln.screens
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -202,6 +204,8 @@ fun BottomNavBar(
     val curChapID = content.STT
     val chapNum = content.dsChuong.count()
     val prevChapExist = curChapID > 1
+    var mediaPlayer: MediaPlayer? by remember { mutableStateOf(null) }
+
 //    val nextChapExist =
 
     Box(modifier = modifier) {
@@ -251,6 +255,20 @@ fun BottomNavBar(
 //                modifier = iconModifier
 //                    .clickable {  }
 //            )
+            IconButton(
+                onClick = {
+                    mediaPlayer?.release()
+                    mediaPlayer = MediaPlayer.create(context, R.raw.'cái này là file')
+                    mediaPlayer?.start()
+                },
+                modifier = iconModifier
+            ) {
+                Icon(
+                    Icons.Rounded.PlayArrow,
+                    contentDescription = null
+                )
+            }
+
             IconButton(
                 enabled = curChapID < chapNum,
                 onClick = {

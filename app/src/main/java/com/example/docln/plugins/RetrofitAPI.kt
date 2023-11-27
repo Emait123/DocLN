@@ -63,6 +63,12 @@ interface RetrofitAPI {
 
     @GET("followList")
     suspend fun getFollowList( @Query("userID") userID : Int): List<Novel>
+    @GET("change-password")
+    suspend fun changePassword(
+        @Query("loginName") loginName: String,
+        @Query("newPassword") newPassword: String,
+        @Query("oldPassword") oldPassword: String): LoginResponse
+
 
     companion object {
         var retrofitAPI: RetrofitAPI? = null

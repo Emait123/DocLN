@@ -27,24 +27,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.docln.Routes
-import com.example.docln.viewmodels.LoginViewModel
+import com.example.docln.viewmodels.ChangePasswordViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController,account_id :String?) {
-    val viewModel = viewModel<LoginViewModel>()
+fun ChangePasswordScreen(navController: NavController) {
+    val viewModel = viewModel<ChangePasswordViewModel>()
     val contextForToast = LocalContext.current.applicationContext
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Đăng nhập") },
+                title = { Text("Đổi Mật Khẩu") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Cyan),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -54,7 +54,8 @@ fun LoginScreen(navController: NavController,account_id :String?) {
                         )
                     }
                 },
-            ) },
+            )
+        },
         content = { paddingValues ->
             Surface(
                 modifier = Modifier
@@ -68,18 +69,18 @@ fun LoginScreen(navController: NavController,account_id :String?) {
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val context = LocalContext.current
                     val (username, setUsername) = remember { mutableStateOf("") }
-                    val (password, setPassword) = remember { mutableStateOf("") }
+                    val (password, setpassword) = remember { mutableStateOf("") }
+                    val (newpassword, setNewPassword) = remember { mutableStateOf("") }
 
                     TextField(
                         value = username,
                         onValueChange = { setUsername(it) },
-                        label = { Text("Username") },
+                        label = { Text("Tên Đăng Nhập") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 18.sp),
+                        textStyle = TextStyle(fontSize = 18.sp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
                             unfocusedBorderColor = Color.Gray
@@ -88,64 +89,54 @@ fun LoginScreen(navController: NavController,account_id :String?) {
 
                     TextField(
                         value = password,
-                        onValueChange = { setPassword(it) },
-                        label = { Text("Password") },
+                        onValueChange = { setpassword(it) },
+                        label = { Text("Nhập lại mạt khẩu") },
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 18.sp),
+                        textStyle = TextStyle(fontSize = 18.sp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
                             unfocusedBorderColor = Color.Gray
                         )
                     )
+
+                    TextField(
+                        value = newpassword,
+                        onValueChange = { setNewPassword(it) },
+                        label = { Text("Mật Khẩu mới") },
+                        visualTransformation = PasswordVisualTransformation(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        textStyle = TextStyle(fontSize = 18.sp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = Color.Gray
+                        )
+                    )
+
                     OutlinedButton(
                         onClick = {
-                            // Chuyển hướng đến màn hình đổi mật khẩu
-                            navController.navigate(Routes.ChangePassword.route)
+                            viewModel.changePassword(username, password,newpassword)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
                     ) {
-                        Text("Đổi Mật Khẩu")
-                    }
-                    OutlinedButton(
-                            onClick = { viewModel.checkUser(username, password) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        Text("Đăng Nhập")
-                    }
-                    OutlinedButton(
-                        onClick = {
-                            navController.navigate(Routes.Register.route)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        Text("Đăng Ký")
+                        Text("Xác Nhận")
                     }
                 }
             }
         }
     )
 
-    LaunchedEffect(viewModel.isUserLogin) {
-        if (viewModel.isUserLogin) {
-            navController.popBackStack()
-        }
-    }
-
-    LaunchedEffect(viewModel.response) {
-        if (viewModel.response != "") {
-            Toast.makeText(contextForToast, viewModel.response, Toast.LENGTH_SHORT).show()
-            viewModel.response = ""
-        }
-    }
+//    LaunchedEffect(viewModel.response) {
+//        if (viewModel.response != "") {
+//            Toast.makeText(contextForToast, viewModel.response, Toast.LENGTH_SHORT).show()
+//            viewModel.response = ""
+//        }
+//    }
 }
-//tai khoan:quanh
-//matkhau:123456
+
