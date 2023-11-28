@@ -1,5 +1,6 @@
 package com.example.docln.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.docln.Routes
 import com.example.docln.plugins.ThiSinh
 import com.example.docln.viewmodels.DanhSachViewModel
 
@@ -78,6 +80,8 @@ fun DanhSachScreen(navController: NavController) {
 fun ThiSinhItem(navController: NavController, thiSinh: ThiSinh) {
     Row(
         modifier = Modifier
+            .padding(top = 20.dp, bottom = 20.dp)
+            .clickable { navController.navigate(Routes.NovelDetail.withArgs(thiSinh.id.toString())) }
     ){
         Text(thiSinh.tenTS)
     }

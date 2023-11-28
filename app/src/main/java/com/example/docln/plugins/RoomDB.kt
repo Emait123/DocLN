@@ -83,6 +83,9 @@ interface ThiSinhDao {
     @Query("SELECT * FROM thisinh")
     fun getAll(): Flow<List<ThiSinh>>
 
+    @Query("SELECT * FROM thisinh WHERE id = :id")
+    fun getThiSinh(id: Int): Flow<ThiSinh>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertThiSinh(thiSinh: ThiSinh)
 }
@@ -122,6 +125,10 @@ class DBRepository (
 
     suspend fun insertOrUpdateThiSinh(thiSinh: ThiSinh) {
         thiSinhDao.insertThiSinh(thiSinh)
+    }
+
+    suspend fun getThiSinh(id: Int): Flow<ThiSinh> {
+        return thiSinhDao.getThiSinh(id)
     }
 
     suspend fun logOut(account: RoomAccount){

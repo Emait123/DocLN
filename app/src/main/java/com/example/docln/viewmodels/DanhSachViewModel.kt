@@ -16,6 +16,7 @@ class DanhSachViewModel: ViewModel() {
     var dsThiSinh: List<ThiSinh> by mutableStateOf(listOf())
 
     init {
+//        createDS()
         getDSThiSinh()
     }
 
@@ -29,5 +30,19 @@ class DanhSachViewModel: ViewModel() {
         }
     }
 
-    fun createDS()
+    fun createDS() {
+        val ds: List<ThiSinh> = listOf(
+            ThiSinh(1, "Nguyễn Văn A", 9),
+            ThiSinh(2, "Trương Tiến Đạt", 10),
+            ThiSinh(3, "Lê Tuấn Anh", 8),
+            ThiSinh(4, "Trương Thu Trang", 7),
+            ThiSinh(5, "Nguyễn Phương Dung", 6),
+            ThiSinh(6, "Phạm Phương Liên", 9),
+        )
+        viewModelScope.launch {
+            for (thisinh in ds) {
+                repository.insertOrUpdateThiSinh(thisinh)
+            }
+        }
+    }
 }

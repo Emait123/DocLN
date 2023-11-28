@@ -23,6 +23,7 @@ import com.example.docln.plugins.Graph
 import com.example.docln.screens.ChangePasswordScreen
 import com.example.docln.screens.NovelDetailScreen
 import com.example.docln.screens.ChapterScreen
+import com.example.docln.screens.ChiTietScreen
 import com.example.docln.screens.DanhSachScreen
 import com.example.docln.screens.FollowScreen
 import com.example.docln.screens.HomeScreen
@@ -136,6 +137,18 @@ fun Navigation() {
             route = Routes.DSThiSinh.route,
         ) {
                 DanhSachScreen(navController)
+        }
+        composable(
+            route = Routes.ChiTiet.route + "/{idTS}",
+            arguments = listOf(
+                navArgument("idTS") {
+                    type = NavType.StringType
+                    defaultValue = "0"
+                    nullable = false
+                }
+            )
+        ) {
+                entry -> ChiTietScreen(navController, id = entry.arguments?.getString("idTS"))
         }
     }
 }
