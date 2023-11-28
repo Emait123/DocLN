@@ -23,6 +23,7 @@ import com.example.docln.plugins.Graph
 import com.example.docln.screens.ChangePasswordScreen
 import com.example.docln.screens.NovelDetailScreen
 import com.example.docln.screens.ChapterScreen
+import com.example.docln.screens.DanhSachScreen
 import com.example.docln.screens.FollowScreen
 import com.example.docln.screens.HomeScreen
 import com.example.docln.screens.LoginScreen
@@ -128,6 +129,13 @@ fun Navigation() {
                 entry ->
             val rankingItems = null;
             rankingItems?.let { RankingScreen(navController, it) }
+        }
+
+        //Them man hinh
+        composable(
+            route = Routes.DSThiSinh.route,
+        ) {
+                DanhSachScreen(navController)
         }
     }
 }

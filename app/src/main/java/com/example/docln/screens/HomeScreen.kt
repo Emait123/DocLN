@@ -76,7 +76,7 @@ fun HomeScreen(navController: NavController) {
     val loginState = viewModel.isUserLoggedIn
     val userName = viewModel.userName
 
-    val menuList = listOf(Routes.Home, Routes.Search)
+    val menuList = listOf(Routes.Home, Routes.Search, Routes.DSThiSinh)
     val userList = listOf(Routes.Login, Routes.Register)
     val selectedItem = remember { mutableStateOf(menuList[0]) }
 

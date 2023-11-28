@@ -20,6 +20,8 @@ sealed class Routes(val name: String, val icon: ImageVector, val route: String) 
     object Login : Routes(name = "Đăng nhập", icon = Icons.Filled.AccountCircle, route = "login")
     object Register : Routes(name = "Đăng ký", icon = Icons.Filled.Info, route = "register")
     object Follow : Routes(name = "Truyện theo dõi", icon = Icons.Filled.Favorite, route = "follow")
+    object DSThiSinh: Routes(name = "Danh sách thí sinh", icon = Icons.Filled.Home, route = "danhsach")
+    object ChiTiet: Routes(name = "Thông tin chi tiết thí sinh", icon = Icons.Filled.Info, route = "chitiet")
 
     fun withArgs(vararg args: String) : String {
         return buildString {

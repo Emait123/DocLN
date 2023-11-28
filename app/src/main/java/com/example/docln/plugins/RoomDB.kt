@@ -39,6 +39,13 @@ data class RoomAccount(
     constructor(accountID: Int, displayName: String) : this (null, accountID, displayName)
 }
 
+@Entity(tableName = "thisinh")
+data class ThiSinh(
+    @PrimaryKey(autoGenerate = true) val id: Int?,
+    val tenTS: String,
+    val ketQua: Int
+)
+
 
 //Các Interface chứa các function sẽ thực hiện với bảng đó
 @Dao
@@ -71,10 +78,20 @@ interface AccountDao {
     suspend fun insertAccount(account: RoomAccount)
 }
 
-@Database(entities = [RoomNovel::class, RoomAccount::class], version = 3, exportSchema = false)
+@Dao
+interface ThiSinhDao {
+    @Query("SELECT * FROM thisinh")
+    fun getAll(): Flow<List<ThiSinh>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertThiSinh(thiSinh: ThiSinh)
+}
+
+@Database(entities = [RoomNovel::class, RoomAccount::class, ThiSinh::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun novelDao(): NovelDao
     abstract fun accountDao(): AccountDao
+    abstract fun thisinhDao(): ThiSinhDao
 
     companion object {
         @Volatile
@@ -96,10 +113,17 @@ abstract class AppDatabase : RoomDatabase() {
 
 class DBRepository (
     private val novelDao: NovelDao,
-    private val accountDao: AccountDao
+    private val accountDao: AccountDao,
+    private val thiSinhDao: ThiSinhDao
 ) {
     val account = accountDao.getAccount()
     val novels = novelDao.getAll()
+    val thiSinhs = thiSinhDao.getAll()
+
+    suspend fun insertOrUpdateThiSinh(thiSinh: ThiSinh) {
+        thiSinhDao.insertThiSinh(thiSinh)
+    }
+
     suspend fun logOut(account: RoomAccount){
         accountDao.deleteAccount(account)
     }

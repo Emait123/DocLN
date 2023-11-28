@@ -9,7 +9,8 @@ object Graph {
     val repository by lazy {
         DBRepository(
             novelDao = db.novelDao(),
-            accountDao = db.accountDao()
+            accountDao = db.accountDao(),
+            thiSinhDao = db.thisinhDao()
         )
     }
 
