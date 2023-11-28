@@ -81,7 +81,7 @@ fun ThiSinhItem(navController: NavController, thiSinh: ThiSinh) {
     Row(
         modifier = Modifier
             .padding(top = 20.dp, bottom = 20.dp)
-            .clickable { navController.navigate(Routes.NovelDetail.withArgs(thiSinh.id.toString())) }
+            .clickable { navController.navigate(Routes.ChiTiet.withArgs(thiSinh.id.toString())) }
     ){
         Text(thiSinh.tenTS)
     }

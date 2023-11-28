@@ -2,6 +2,7 @@ package com.example.docln.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -19,24 +20,48 @@ import com.example.docln.viewmodels.ChiTietViewModel
 @Composable
 fun ChiTietScreen(navController: NavController, id: String?) {
     val vm = viewModel<ChiTietViewModel>()
+//    var (tenTS, settenTS) = remember { mutableStateOf("") }
+    var (ketQua, setketQua) = remember { mutableIntStateOf(0) }
+//    var tenTS: String by remember { mutableStateOf("") }
+//    var ketQua: Int by remember { mutableIntStateOf(0) }
     if (id != null) {
         vm.getThiSinh(id.toInt())
     }
     var maTS: Int = vm.maTS
-    var tenTS: String = vm.tenTS
-    var ketQua: Int = vm.ketQua
+//    settenTS(vm.tenTS)
+//    setketQua(vm.ketQua)
+//    tenTS = vm.tenTS
+//    ketQua = vm.ketQua
+
     Column {
         Row {
-            Text(text = "Ma TS")
-            TextField(value = maTS.toString(), onValueChange = { maTS = it.toInt() } )
+            Text(text = "Ma TS: ")
+//            TextField(value = maTS.toString(), onValueChange = { maTS = it.toInt() } )
+            Text(text = maTS.toString())
         }
         Row {
             Text(text = "Ten TS")
-            TextField(value = tenTS, onValueChange = { tenTS = it } )
+            TextField(
+                value = vm.tenTS,
+                onValueChange = {
+                    vm.changeName(it)
+//                    settenTS(it)
+                } )
         }
         Row {
             Text(text = "Ket Qua")
-            TextField(value = ketQua.toString(), onValueChange = { ketQua = it.toInt() } )
+            TextField(value = ketQua.toString(), onValueChange = { setketQua(it.toInt()) } )
+        }
+        Row {
+            Button(onClick = {
+                vm.updateThiSinh(ketQua)
+                navController.popBackStack()
+            }) {
+                Text(text = "Cap nhat")
+            }
+            Button(onClick = { navController.popBackStack() }) {
+                Text(text = "Tro ve")
+            }
         }
     }
 }

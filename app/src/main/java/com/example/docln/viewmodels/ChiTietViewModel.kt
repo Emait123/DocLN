@@ -28,4 +28,19 @@ class ChiTietViewModel : ViewModel() {
             }
         }
     }
+
+    fun changeName(ten:String) {
+        tenTS = ten
+    }
+    fun changeDiem(diem: Int) {
+        ketQua = diem
+    }
+
+    fun updateThiSinh(ketqua: Int) {
+        viewModelScope.launch {
+            repository.insertOrUpdateThiSinh(
+                ThiSinh(maTS, tenTS, ketqua)
+            )
+        }
+    }
 }
